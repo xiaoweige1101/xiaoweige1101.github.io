@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"xiaoweige1101.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.23.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"show_result":true,"style":"mac"},"fold":{"enable":true,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":false,"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="1. 问题背景&emsp;&emsp;短信平台经常需要满足文件上传和下载的场景，如果是大文件上传，需要做到快速上传，如何客户网络不好，还要支持断点续传。客户发送完成后，需要对明细数据进行下载，要求下载时间不能过长，数据库负载不能太高。 2. 文件上传2.1 设计思路&emsp;&emsp;文件上传的逻辑编写并不复杂，但是普通的文件上传方法有两个问题：  大文件上传速度不快； 不支持断点续传，如果客">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何高效地实现文件上传、入库和下载">
+<meta property="og:url" content="https://xiaoweige1101.github.io/2025/04/19/%E5%A6%82%E4%BD%95%E9%AB%98%E6%95%88%E5%9C%B0%E5%AE%9E%E7%8E%B0%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E5%85%A5%E5%BA%93%E5%92%8C%E4%B8%8B%E8%BD%BD/index.html">
+<meta property="og:site_name" content="Tony的博客">
+<meta property="og:description" content="1. 问题背景&emsp;&emsp;短信平台经常需要满足文件上传和下载的场景，如果是大文件上传，需要做到快速上传，如何客户网络不好，还要支持断点续传。客户发送完成后，需要对明细数据进行下载，要求下载时间不能过长，数据库负载不能太高。 2. 文件上传2.1 设计思路&emsp;&emsp;文件上传的逻辑编写并不复杂，但是普通的文件上传方法有两个问题：  大文件上传速度不快； 不支持断点续传，如果客">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-04-19T14:04:11.000Z">
+<meta property="article:modified_time" content="2025-05-04T14:34:43.582Z">
+<meta property="article:author" content="Tony">
+<meta property="article:tag" content="文件处理 数据库">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://xiaoweige1101.github.io/2025/04/19/%E5%A6%82%E4%BD%95%E9%AB%98%E6%95%88%E5%9C%B0%E5%AE%9E%E7%8E%B0%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E5%85%A5%E5%BA%93%E5%92%8C%E4%B8%8B%E8%BD%BD/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://xiaoweige1101.github.io/2025/04/19/%E5%A6%82%E4%BD%95%E9%AB%98%E6%95%88%E5%9C%B0%E5%AE%9E%E7%8E%B0%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E5%85%A5%E5%BA%93%E5%92%8C%E4%B8%8B%E8%BD%BD/","path":"2025/04/19/如何高效地实现文件上传入库和下载/","title":"如何高效地实现文件上传、入库和下载"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>如何高效地实现文件上传、入库和下载 | Tony的博客</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"mhchem":false,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js" defer></script>
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Tony的博客</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">行动大于完美</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E9%97%AE%E9%A2%98%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">1. 问题背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0"><span class="nav-number">2.</span> <span class="nav-text">2. 文件上传</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-%E8%AE%BE%E8%AE%A1%E6%80%9D%E8%B7%AF"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 设计思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-%E4%BB%80%E4%B9%88%E6%98%AF%E5%88%86%E7%89%87%E4%B8%8A%E4%BC%A0%EF%BC%9F"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 什么是分片上传？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-%E7%9B%B8%E5%85%B3%E8%AE%BE%E8%AE%A1%E8%A6%81%E7%82%B9"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 相关设计要点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 系统设计</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-5-%E6%8E%A5%E5%8F%A3%E8%AE%BE%E8%AE%A1"><span class="nav-number">2.5.</span> <span class="nav-text">2.5 接口设计</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-6-%E6%95%B0%E6%8D%AE%E8%A1%A8%E8%AE%BE%E8%AE%A1"><span class="nav-number">2.6.</span> <span class="nav-text">2.6 数据表设计</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-7-%E5%BC%82%E5%B8%B8%E6%83%85%E5%86%B5%E5%A4%84%E7%90%86"><span class="nav-number">2.7.</span> <span class="nav-text">2.7 异常情况处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-8-%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96"><span class="nav-number">2.8.</span> <span class="nav-text">2.8 性能优化</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E6%95%B0%E6%8D%AE%E5%85%A5%E5%BA%93"><span class="nav-number">3.</span> <span class="nav-text">3. 数据入库</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-%E7%8A%B6%E6%80%81%E6%8A%A5%E5%91%8A%E6%9B%B4%E6%96%B0"><span class="nav-number">3.1.</span> <span class="nav-text">3.2 状态报告更新</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-%E6%95%B0%E6%8D%AE%E4%B8%8B%E8%BD%BD"><span class="nav-number">4.</span> <span class="nav-text">4. 数据下载</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1-%E6%B7%B1%E5%BA%A6%E5%88%86%E9%A1%B5%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 深度分页的问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-2-%E5%9F%BA%E4%BA%8E%E4%B8%BB%E9%94%AEID%E7%9A%84%E5%88%86%E9%A1%B5%E6%96%B9%E6%A1%88"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 基于主键ID的分页方案</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96"><span class="nav-number">5.</span> <span class="nav-text">5. 性能优化</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Tony</p>
+  <div class="site-description" itemprop="description">找到兴趣，持续投入时间，然后做到极致！</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xiaoweige1101" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xiaoweige1101" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://xiaoweige1101.github.io/2025/04/19/%E5%A6%82%E4%BD%95%E9%AB%98%E6%95%88%E5%9C%B0%E5%AE%9E%E7%8E%B0%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E5%85%A5%E5%BA%93%E5%92%8C%E4%B8%8B%E8%BD%BD/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Tony">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Tony的博客">
+      <meta itemprop="description" content="找到兴趣，持续投入时间，然后做到极致！">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="如何高效地实现文件上传、入库和下载 | Tony的博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          如何高效地实现文件上传、入库和下载
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-04-19 22:04:11" itemprop="dateCreated datePublished" datetime="2025-04-19T22:04:11+08:00">2025-04-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-05-04 22:34:43" itemprop="dateModified" datetime="2025-05-04T22:34:43+08:00">2025-05-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%8A%80%E6%9C%AF%E6%96%87%E7%AB%A0/" itemprop="url" rel="index"><span itemprop="name">技术文章</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="1-问题背景"><a href="#1-问题背景" class="headerlink" title="1. 问题背景"></a>1. 问题背景</h1><p>&emsp;&emsp;短信平台经常需要满足文件上传和下载的场景，如果是大文件上传，需要做到快速上传，如何客户网络不好，还要支持断点续传。客户发送完成后，需要对明细数据进行下载，要求下载时间不能过长，数据库负载不能太高。</p>
+<h1 id="2-文件上传"><a href="#2-文件上传" class="headerlink" title="2. 文件上传"></a>2. 文件上传</h1><h2 id="2-1-设计思路"><a href="#2-1-设计思路" class="headerlink" title="2.1 设计思路"></a>2.1 设计思路</h2><p>&emsp;&emsp;文件上传的逻辑编写并不复杂，但是普通的文件上传方法有两个问题：</p>
+<ul>
+<li>大文件上传速度不快；</li>
+<li>不支持断点续传，如果客户电脑网络不好，中断后需要重新再来；<br>解决方法是：分片上传。</li>
+</ul>
+<h2 id="2-2-什么是分片上传？"><a href="#2-2-什么是分片上传？" class="headerlink" title="2.2 什么是分片上传？"></a>2.2 什么是分片上传？</h2><p>&emsp;&emsp;分片上传就是将源文件切分为若干的分片小文件进行上传，等到所有分片上传完毕后，再将所有分片合并，得到最后的原始文件。</p>
+<h2 id="2-3-相关设计要点"><a href="#2-3-相关设计要点" class="headerlink" title="2.3 相关设计要点"></a>2.3 相关设计要点</h2><ul>
+<li>文件分配：能够将大文件按照指定的大小进行分割，生成多个文件片段。</li>
+<li>上传管理：支持并行上传文件片段，提高上传效率。</li>
+<li>服务器处理：服务器端接收文件片段，并在所有片段上传完成后将它们合并成原始文件。</li>
+<li>断点续传：如果上传过程中出现中断，能够从断点处继续上传未完成的文件片段。</li>
+<li>状态跟踪：记录每个文件片段的上传状态，以便在需要时进行查询和管理。</li>
+<li>错误处理：能够处理上传过程中出现的各种错误，如网络错误、文件损坏等，并提供相应的提示信息。</li>
+</ul>
+<h2 id="2-4-系统设计"><a href="#2-4-系统设计" class="headerlink" title="2.4 系统设计"></a>2.4 系统设计</h2><ul>
+<li>架构设计：采用客户端 - 服务器架构，客户端负责文件的分片和上传，服务器端负责接收文件片段并进行合并。</li>
+<li>模块划分：<ul>
+<li>客户端模块：包含文件分片模块、上传管理模块、断点续传模块和状态跟踪模块。</li>
+<li>服务器端模块：包含文件接收模块、文件合并模块和错误处理模块。</li>
+</ul>
+</li>
+<li>数据流程：<ul>
+<li>客户端将文件分割成多个片段，并为每个片段生成唯一的标识。</li>
+<li>客户端按照一定的顺序或并行地将文件片段上传到服务器。</li>
+<li>服务器端接收文件片段，验证其完整性，并记录上传状态。</li>
+<li>当所有文件片段上传完成后，服务器端将它们合并成原始文件。</li>
+</ul>
+</li>
+</ul>
+<h2 id="2-5-接口设计"><a href="#2-5-接口设计" class="headerlink" title="2.5 接口设计"></a>2.5 接口设计</h2><ul>
+<li>客户端接口：<ul>
+<li><code>splitFile(file, chunkSize)</code>：将文件分割成指定大小的片段。</li>
+<li><code>uploadChunk(chunk, chunkId)</code>：上传一个文件片段。</li>
+<li><code>resumeUpload(fileId)</code>：从断点处继续上传文件。</li>
+<li><code>getStatus(fileId)</code>：获取文件的上传状态。</li>
+</ul>
+</li>
+<li>服务端接口：<ul>
+<li><code>/init</code>:创建分配上传任务，后面三个接口都要用到该ID。 </li>
+<li><code>/upload</code>：接收文件片段的上传请求。</li>
+<li><code>/merge</code>：合并所有已上传的文件片段。</li>
+<li><code>/status</code>：查询文件的上传状态。</li>
+</ul>
+</li>
+</ul>
+<h2 id="2-6-数据表设计"><a href="#2-6-数据表设计" class="headerlink" title="2.6 数据表设计"></a>2.6 数据表设计</h2><ul>
+<li>分片上传任务表(t_shard_upload)</li>
+</ul>
+<p>每个分片任务会在此表创建一条记录</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create table</span> if <span class="keyword">not</span> <span class="keyword">exists</span> t_shard_upload(</span><br><span class="line">    id <span class="type">varchar</span>(<span class="number">32</span>) <span class="keyword">primary key</span>,</span><br><span class="line">    file_name <span class="type">varchar</span>(<span class="number">256</span>) <span class="keyword">not null</span> comment <span class="string">&#x27;文件名称&#x27;</span>,</span><br><span class="line">    part_num <span class="type">int</span> <span class="keyword">not null</span> comment <span class="string">&#x27;分片数量&#x27;</span>,</span><br><span class="line">    md5 <span class="type">varchar</span>(<span class="number">128</span>) comment <span class="string">&#x27;文件md5值&#x27;</span>,</span><br><span class="line">    file_full_path <span class="type">varchar</span>(<span class="number">512</span>) comment <span class="string">&#x27;文件完整路径&#x27;</span></span><br><span class="line">) comment <span class="operator">=</span> <span class="string">&#x27;分片上传任务表&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>分片文件表(t_shard_upload_part)</li>
+</ul>
+<p>&emsp;&emsp;这个表和上面的表是1对多的关系，用于记录每个分片的信息，比如一个文件被切分成10个分配，就会有10条记录</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create table</span> if <span class="keyword">not</span> <span class="keyword">exists</span>  t_shard_upload_part(</span><br><span class="line">    id <span class="type">varchar</span>(<span class="number">32</span>) <span class="keyword">primary key</span>,</span><br><span class="line">    shard_upload_id <span class="type">varchar</span>(<span class="number">32</span>) <span class="keyword">not null</span> comment <span class="string">&#x27;分片任务id（t_shard_upload.id）&#x27;</span>,</span><br><span class="line">    part_order <span class="type">int</span> <span class="keyword">not null</span> comment <span class="string">&#x27;第几个分片，从1开始&#x27;</span>,</span><br><span class="line">    file_full_path <span class="type">varchar</span>(<span class="number">512</span>) comment <span class="string">&#x27;文件完整路径&#x27;</span>,<span class="keyword">UNIQUE</span> KEY `uq_part_order` (`shard_upload_id`,`part_order`)</span><br><span class="line">) comment <span class="operator">=</span> <span class="string">&#x27;分片文件表，每个分片文件对应一条记录&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-7-异常情况处理"><a href="#2-7-异常情况处理" class="headerlink" title="2.7 异常情况处理"></a>2.7 异常情况处理</h2><p>如出现网络故障，导致分配上传失败，此时需要走恢复逻辑，分两种情况</p>
+<ul>
+<li>情况1：客户端异常处理<ul>
+<li>网络错误：在出现网络错误时，自动重试上传操作，并记录重试次数。</li>
+<li>文件损坏：在文件分片或上传过程中检测到文件损坏时，提示用户重新选择文件。</li>
+</ul>
+</li>
+<li>情况2：服务器端异常处理<ul>
+<li>文件片段接收错误：在接收文件片段时出现错误，记录错误信息，并通知客户端重新上传该片段。</li>
+<li>文件合并错误：在文件合并过程中出现错误，记录错误信息，并删除已上传的文件片段。</li>
+</ul>
+</li>
+</ul>
+<h2 id="2-8-性能优化"><a href="#2-8-性能优化" class="headerlink" title="2.8 性能优化"></a>2.8 性能优化</h2><ol>
+<li>并行上传：使用多线程或异步编程技术，实现文件片段的并行上传，提高上传效率。</li>
+<li>缓存机制：在服务器端使用缓存机制，减少对数据库的频繁访问。</li>
+<li>压缩传输：对文件片段进行压缩后再上传，减少网络传输的数据量。</li>
+</ol>
+<ul>
+<li>前端代码示例</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>文件分片上传<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;file&quot;</span> <span class="attr">id</span>=<span class="string">&quot;fileInput&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">button</span> <span class="attr">id</span>=<span class="string">&quot;uploadButton&quot;</span>&gt;</span>上传<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;status&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">const</span> fileInput = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&#x27;fileInput&#x27;</span>);</span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">const</span> uploadButton = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&#x27;uploadButton&#x27;</span>);</span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">const</span> statusDiv = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&#x27;status&#x27;</span>);</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">        uploadButton.<span class="title function_">addEventListener</span>(<span class="string">&#x27;click&#x27;</span>, <span class="title function_">async</span> () =&gt; &#123;</span></span><br><span class="line"><span class="language-javascript">            <span class="keyword">const</span> file = fileInput.<span class="property">files</span>[<span class="number">0</span>];</span></span><br><span class="line"><span class="language-javascript">            <span class="keyword">if</span> (!file) &#123;</span></span><br><span class="line"><span class="language-javascript">                <span class="title function_">alert</span>(<span class="string">&#x27;请选择一个文件&#x27;</span>);</span></span><br><span class="line"><span class="language-javascript">                <span class="keyword">return</span>;</span></span><br><span class="line"><span class="language-javascript">            &#125;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">            <span class="keyword">const</span> chunkSize = <span class="number">1024</span> * <span class="number">1024</span>; <span class="comment">// 1MB</span></span></span><br><span class="line"><span class="language-javascript">            <span class="keyword">const</span> totalChunks = <span class="title class_">Math</span>.<span class="title function_">ceil</span>(file.<span class="property">size</span> / chunkSize);</span></span><br><span class="line"><span class="language-javascript">            <span class="keyword">const</span> fileId = <span class="title class_">Date</span>.<span class="title function_">now</span>().<span class="title function_">toString</span>();</span></span><br><span class="line"><span class="language-javascript">            <span class="keyword">let</span> uploadedChunks = [];</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">            <span class="comment">// 获取已上传的分片</span></span></span><br><span class="line"><span class="language-javascript">            <span class="keyword">try</span> &#123;</span></span><br><span class="line"><span class="language-javascript">                <span class="keyword">const</span> response = <span class="keyword">await</span> <span class="title function_">fetch</span>(<span class="string">`/status?fileId=<span class="subst">$&#123;fileId&#125;</span>`</span>);</span></span><br><span class="line"><span class="language-javascript">                <span class="keyword">if</span> (response.<span class="property">ok</span>) &#123;</span></span><br><span class="line"><span class="language-javascript">                    <span class="keyword">const</span> data = <span class="keyword">await</span> response.<span class="title function_">json</span>();</span></span><br><span class="line"><span class="language-javascript">                    uploadedChunks = data.<span class="property">uploadedChunks</span>;</span></span><br><span class="line"><span class="language-javascript">                &#125;</span></span><br><span class="line"><span class="language-javascript">            &#125; <span class="keyword">catch</span> (error) &#123;</span></span><br><span class="line"><span class="language-javascript">                <span class="variable language_">console</span>.<span class="title function_">error</span>(<span class="string">&#x27;获取上传状态失败:&#x27;</span>, error);</span></span><br><span class="line"><span class="language-javascript">            &#125;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">            <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; totalChunks; i++) &#123;</span></span><br><span class="line"><span class="language-javascript">                <span class="keyword">if</span> (uploadedChunks.<span class="title function_">includes</span>(i)) &#123;</span></span><br><span class="line"><span class="language-javascript">                    <span class="keyword">continue</span>;</span></span><br><span class="line"><span class="language-javascript">                &#125;</span></span><br><span class="line"><span class="language-javascript">                <span class="keyword">const</span> start = i * chunkSize;</span></span><br><span class="line"><span class="language-javascript">                <span class="keyword">const</span> end = <span class="title class_">Math</span>.<span class="title function_">min</span>(start + chunkSize, file.<span class="property">size</span>);</span></span><br><span class="line"><span class="language-javascript">                <span class="keyword">const</span> chunk = file.<span class="title function_">slice</span>(start, end);</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">                <span class="keyword">const</span> formData = <span class="keyword">new</span> <span class="title class_">FormData</span>();</span></span><br><span class="line"><span class="language-javascript">                formData.<span class="title function_">append</span>(<span class="string">&#x27;file&#x27;</span>, chunk);</span></span><br><span class="line"><span class="language-javascript">                formData.<span class="title function_">append</span>(<span class="string">&#x27;filename&#x27;</span>, file.<span class="property">name</span>);</span></span><br><span class="line"><span class="language-javascript">                formData.<span class="title function_">append</span>(<span class="string">&#x27;chunkIndex&#x27;</span>, i);</span></span><br><span class="line"><span class="language-javascript">                formData.<span class="title function_">append</span>(<span class="string">&#x27;totalChunks&#x27;</span>, totalChunks);</span></span><br><span class="line"><span class="language-javascript">                formData.<span class="title function_">append</span>(<span class="string">&#x27;fileId&#x27;</span>, fileId);</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">                <span class="keyword">try</span> &#123;</span></span><br><span class="line"><span class="language-javascript">                    <span class="keyword">const</span> response = <span class="keyword">await</span> <span class="title function_">fetch</span>(<span class="string">&#x27;/upload&#x27;</span>, &#123;</span></span><br><span class="line"><span class="language-javascript">                        <span class="attr">method</span>: <span class="string">&#x27;POST&#x27;</span>,</span></span><br><span class="line"><span class="language-javascript">                        <span class="attr">body</span>: formData</span></span><br><span class="line"><span class="language-javascript">                    &#125;);</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">                    <span class="keyword">if</span> (!response.<span class="property">ok</span>) &#123;</span></span><br><span class="line"><span class="language-javascript">                        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">Error</span>(<span class="string">&#x27;上传失败&#x27;</span>);</span></span><br><span class="line"><span class="language-javascript">                    &#125;</span></span><br><span class="line"><span class="language-javascript">                    statusDiv.<span class="property">textContent</span> = <span class="string">`已上传 <span class="subst">$&#123;i + <span class="number">1</span>&#125;</span>/<span class="subst">$&#123;totalChunks&#125;</span> 个分片`</span>;</span></span><br><span class="line"><span class="language-javascript">                &#125; <span class="keyword">catch</span> (error) &#123;</span></span><br><span class="line"><span class="language-javascript">                    <span class="variable language_">console</span>.<span class="title function_">error</span>(<span class="string">&#x27;上传错误:&#x27;</span>, error);</span></span><br><span class="line"><span class="language-javascript">                    <span class="keyword">return</span>;</span></span><br><span class="line"><span class="language-javascript">                &#125;</span></span><br><span class="line"><span class="language-javascript">            &#125;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">            <span class="comment">// 合并文件</span></span></span><br><span class="line"><span class="language-javascript">            <span class="keyword">try</span> &#123;</span></span><br><span class="line"><span class="language-javascript">                <span class="keyword">const</span> response = <span class="keyword">await</span> <span class="title function_">fetch</span>(<span class="string">&#x27;/merge&#x27;</span>, &#123;</span></span><br><span class="line"><span class="language-javascript">                    <span class="attr">method</span>: <span class="string">&#x27;POST&#x27;</span>,</span></span><br><span class="line"><span class="language-javascript">                    <span class="attr">headers</span>: &#123;</span></span><br><span class="line"><span class="language-javascript">                        <span class="string">&#x27;Content-Type&#x27;</span>: <span class="string">&#x27;application/json&#x27;</span></span></span><br><span class="line"><span class="language-javascript">                    &#125;,</span></span><br><span class="line"><span class="language-javascript">                    <span class="attr">body</span>: <span class="title class_">JSON</span>.<span class="title function_">stringify</span>(&#123; fileId, <span class="attr">filename</span>: file.<span class="property">name</span> &#125;)</span></span><br><span class="line"><span class="language-javascript">                &#125;);</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">                <span class="keyword">if</span> (response.<span class="property">ok</span>) &#123;</span></span><br><span class="line"><span class="language-javascript">                    statusDiv.<span class="property">textContent</span> = <span class="string">&#x27;文件上传完成&#x27;</span>;</span></span><br><span class="line"><span class="language-javascript">                &#125; <span class="keyword">else</span> &#123;</span></span><br><span class="line"><span class="language-javascript">                    statusDiv.<span class="property">textContent</span> = <span class="string">&#x27;文件合并失败&#x27;</span>;</span></span><br><span class="line"><span class="language-javascript">                &#125;</span></span><br><span class="line"><span class="language-javascript">            &#125; <span class="keyword">catch</span> (error) &#123;</span></span><br><span class="line"><span class="language-javascript">                <span class="variable language_">console</span>.<span class="title function_">error</span>(<span class="string">&#x27;文件合并错误:&#x27;</span>, error);</span></span><br><span class="line"><span class="language-javascript">                statusDiv.<span class="property">textContent</span> = <span class="string">&#x27;文件合并错误&#x27;</span>;</span></span><br><span class="line"><span class="language-javascript">            &#125;</span></span><br><span class="line"><span class="language-javascript">        &#125;);</span></span><br><span class="line"><span class="language-javascript">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span>    </span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>后端代码示例</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask, request, jsonify</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> sqlite3</span><br><span class="line"></span><br><span class="line">app = Flask(__name__)</span><br><span class="line">UPLOAD_FOLDER = <span class="string">&#x27;uploads&#x27;</span></span><br><span class="line"><span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(UPLOAD_FOLDER):</span><br><span class="line">    os.makedirs(UPLOAD_FOLDER)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 初始化数据库</span></span><br><span class="line">conn = sqlite3.connect(<span class="string">&#x27;files.db&#x27;</span>)</span><br><span class="line">c = conn.cursor()</span><br><span class="line">c.execute(<span class="string">&#x27;&#x27;&#x27;CREATE TABLE IF NOT EXISTS files</span></span><br><span class="line"><span class="string">             (id TEXT PRIMARY KEY, name TEXT, size INTEGER, status TEXT)&#x27;&#x27;&#x27;</span>)</span><br><span class="line">c.execute(<span class="string">&#x27;&#x27;&#x27;CREATE TABLE IF NOT EXISTS chunks</span></span><br><span class="line"><span class="string">             (id INTEGER PRIMARY KEY AUTOINCREMENT, fileId TEXT, index INTEGER, size INTEGER, status TEXT)&#x27;&#x27;&#x27;</span>)</span><br><span class="line">conn.commit()</span><br><span class="line">conn.close()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/upload&#x27;</span>, methods=[<span class="string">&#x27;POST&#x27;</span>]</span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">upload_chunk</span>():</span><br><span class="line">    file = request.files[<span class="string">&#x27;file&#x27;</span>]</span><br><span class="line">    filename = request.form.get(<span class="string">&#x27;filename&#x27;</span>)</span><br><span class="line">    chunkIndex = <span class="built_in">int</span>(request.form.get(<span class="string">&#x27;chunkIndex&#x27;</span>))</span><br><span class="line">    totalChunks = <span class="built_in">int</span>(request.form.get(<span class="string">&#x27;totalChunks&#x27;</span>))</span><br><span class="line">    fileId = request.form.get(<span class="string">&#x27;fileId&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    chunk_filename = os.path.join(UPLOAD_FOLDER, <span class="string">f&#x27;<span class="subst">&#123;fileId&#125;</span>.part<span class="subst">&#123;chunkIndex&#125;</span>&#x27;</span>)</span><br><span class="line">    file.save(chunk_filename)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 更新数据库</span></span><br><span class="line">    conn = sqlite3.connect(<span class="string">&#x27;files.db&#x27;</span>)</span><br><span class="line">    c = conn.cursor()</span><br><span class="line">    c.execute(<span class="string">&quot;INSERT OR IGNORE INTO files (id, name, size, status) VALUES (?,?,?,?)&quot;</span>,</span><br><span class="line">              (fileId, filename, <span class="number">0</span>, <span class="string">&#x27;in_progress&#x27;</span>))</span><br><span class="line">    c.execute(<span class="string">&quot;INSERT INTO chunks (fileId, index, size, status) VALUES (?,?,?,?)&quot;</span>,</span><br><span class="line">              (fileId, chunkIndex, file.content_length, <span class="string">&#x27;uploaded&#x27;</span>))</span><br><span class="line">    conn.commit()</span><br><span class="line">    conn.close()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;Chunk uploaded successfully&#x27;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/merge&#x27;</span>, methods=[<span class="string">&#x27;POST&#x27;</span>]</span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">merge_chunks</span>():</span><br><span class="line">    data = request.get_json()</span><br><span class="line">    fileId = data.get(<span class="string">&#x27;fileId&#x27;</span>)</span><br><span class="line">    filename = data.get(<span class="string">&#x27;filename&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 获取所有分片</span></span><br><span class="line">    conn = sqlite3.connect(<span class="string">&#x27;files.db&#x27;</span>)</span><br><span class="line">    c = conn.cursor()</span><br><span class="line">    c.execute(<span class="string">&quot;SELECT index FROM chunks WHERE fileId =? AND status = &#x27;uploaded&#x27; ORDER BY index&quot;</span>, (fileId,))</span><br><span class="line">    chunks = c.fetchall()</span><br><span class="line">    totalChunks = <span class="built_in">len</span>(chunks)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(chunks) &gt; <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">with</span> <span class="built_in">open</span>(os.path.join(UPLOAD_FOLDER, filename), <span class="string">&#x27;wb&#x27;</span>) <span class="keyword">as</span> outfile:</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(totalChunks):</span><br><span class="line">                chunk_filename = os.path.join(UPLOAD_FOLDER, <span class="string">f&#x27;<span class="subst">&#123;fileId&#125;</span>.part<span class="subst">&#123;i&#125;</span>&#x27;</span>)</span><br><span class="line">                <span class="keyword">with</span> <span class="built_in">open</span>(chunk_filename, <span class="string">&#x27;rb&#x27;</span>) <span class="keyword">as</span> infile:</span><br><span class="line">                    outfile.write(infile.read())</span><br><span class="line">                os.remove(chunk_filename)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 更新文件状态</span></span><br><span class="line">        c.execute(<span class="string">&quot;UPDATE files SET status = &#x27;completed&#x27; WHERE id =?&quot;</span>, (fileId,))</span><br><span class="line">        conn.commit()</span><br><span class="line">        conn.close()</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&#x27;File merged successfully&#x27;</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        conn.close()</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&#x27;No chunks to merge&#x27;</span>, <span class="number">400</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/status&#x27;</span>, methods=[<span class="string">&#x27;GET&#x27;</span>]</span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_status</span>():</span><br><span class="line">    fileId = request.args.get(<span class="string">&#x27;fileId&#x27;</span>)</span><br><span class="line">    conn = sqlite3.connect(<span class="string">&#x27;files.db&#x27;</span>)</span><br><span class="line">    c = conn.cursor()</span><br><span class="line">    c.execute(<span class="string">&quot;SELECT index FROM chunks WHERE fileId =? AND status = &#x27;uploaded&#x27;&quot;</span>, (fileId,))</span><br><span class="line">    chunks = c.fetchall()</span><br><span class="line">    uploadedChunks = [chunk[<span class="number">0</span>] <span class="keyword">for</span> chunk <span class="keyword">in</span> chunks]</span><br><span class="line">    conn.close()</span><br><span class="line">    <span class="keyword">return</span> jsonify(&#123;<span class="string">&#x27;uploadedChunks&#x27;</span>: uploadedChunks&#125;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    app.run(debug=<span class="literal">True</span>)    </span><br></pre></td></tr></table></figure>
+
+
+<h1 id="3-数据入库"><a href="#3-数据入库" class="headerlink" title="3. 数据入库"></a>3. 数据入库</h1><pre><code>这里需要考虑提交数据入库，以及状态报告更新两大场景。
+</code></pre>
+<p>3.1 数据提交入库</p>
+<ul>
+<li>批量入库</li>
+<li>使用事务</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">START TRANSACTION;</span><br><span class="line">-- 执行数据插入语句</span><br><span class="line">INSERT INTO phone_numbers (number, user_name, region, remark)</span><br><span class="line">VALUES</span><br><span class="line">    (...,...,...,...);</span><br><span class="line">-- 检查插入是否成功，若失败则回滚事务</span><br><span class="line">IF @@ERROR &lt;&gt; 0 THEN</span><br><span class="line">    ROLLBACK;</span><br><span class="line">ELSE</span><br><span class="line">    COMMIT;</span><br><span class="line">END IF;</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-2-状态报告更新"><a href="#3-2-状态报告更新" class="headerlink" title="3.2 状态报告更新"></a>3.2 状态报告更新</h2><p>一般短信提交后，80%以上的状态报告都会在10秒内返回，而MySql的Update操作又会比较消耗性能（涉及查询和写入操作），因此一般为了提升性能会将插入和更新的数据在内存中进行合并，再入库：</p>
+<ul>
+<li>入库的消息在内存中缓存10秒，如果状态报告回来了，则合并为插入数据入库；</li>
+<li>如果超过10秒没有回来，则也刷新入库；<br>PS: 10秒是个经验值，也可根据实际情况进行调整。</li>
+</ul>
+<p>一般建议短信的客户侧明细和通道侧明细分开存储，因为对于客户而言，只提交了一条短信，有可能短信平台通过各个通道发送了5条短信，两者的逻辑差别较大。</p>
+<h1 id="4-数据下载"><a href="#4-数据下载" class="headerlink" title="4. 数据下载"></a>4. 数据下载</h1><h2 id="4-1-深度分页的问题"><a href="#4-1-深度分页的问题" class="headerlink" title="4.1 深度分页的问题"></a>4.1 深度分页的问题</h2><p>在数据导出场景中，传统使用 LIMIT 和 OFFSET 的分页方式，随着 OFFSET 值增大，查询性能会急剧下降。这是因为 MySQL 执行 LIMIT OFFSET, N 语句时，需要先定位到 OFFSET 偏移量对应的记录，再读取后续 N 条记录，当 OFFSET 很大时，会产生大量的扫描操作，导致查询效率极低，无法满足大量数据导出需求。</p>
+<h2 id="4-2-基于主键ID的分页方案"><a href="#4-2-基于主键ID的分页方案" class="headerlink" title="4.2 基于主键ID的分页方案"></a>4.2 基于主键ID的分页方案</h2><ul>
+<li><p>核心原理：利用 MySQL 主键 ID 自增且唯一、有序的特性，在进行分页查询时，通过记录上一页最后一条数据的主键 ID，在查询下一页数据时，以该主键 ID 为条件，查询大于该 ID 的后续数据，从而避免大量偏移扫描，提高查询效率。</p>
+</li>
+<li><p>实现步骤：</p>
+<ul>
+<li>首次查询：在数据导出开始时，构建包含条件查询的 SQL 语句，查询满足条件的第一批数据。</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">SELECT id, number, user_name, region, create_time, remark</span><br><span class="line">FROM phone_numbers</span><br><span class="line">WHERE &lt;条件子句&gt;</span><br><span class="line">ORDER BY id</span><br><span class="line">LIMIT 1000;</span><br></pre></td></tr></table></figure>
+
+<p>这里通过 ORDER BY id 确保数据按主键 ID 有序排列，LIMIT 1000 表示获取第一批 1000 条数据。</p>
+<ul>
+<li>后续分页查询：在获取到第一批数据后，记录最后一条数据的主键 ID（假设为 last_id）。在查询下一页数据时，构建如下 SQL 语句：</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">SELECT id, number, user_name, region, create_time, remark</span><br><span class="line">FROM phone_numbers</span><br><span class="line">WHERE &lt;条件子句&gt; AND id &gt; last_id</span><br><span class="line">ORDER BY id</span><br><span class="line">LIMIT 1000;</span><br></pre></td></tr></table></figure>
+
+<p>通过 id &gt; last_id 的条件，仅查询大于上一页最后主键 ID 的数据，再结合 LIMIT 1000 获取下一页 1000 条数据，以此类推，实现分页查询。</p>
+<h1 id="5-性能优化"><a href="#5-性能优化" class="headerlink" title="5. 性能优化"></a>5. 性能优化</h1><ol>
+<li>数据库配置优化</li>
+</ol>
+<ul>
+<li>调整 MySQL 的配置参数，如 innodb_buffer_pool_size（InnoDB 缓冲池大小），根据服务器内存大小合理设置，建议设置为服务器内存的 60% - 80%，以提高数据读取和写入性能。</li>
+<li>优化 max_allowed_packet 参数，确保能够处理较大的插入数据量，避免因数据量过大导致的数据包过大错误。</li>
+</ul>
+<ol start="2">
+<li>硬件资源优化</li>
+</ol>
+<ul>
+<li>确保服务器具备足够的内存、CPU 和磁盘 I&#x2F;O 性能。优先选择固态硬盘（SSD）存储数据库文件，相比机械硬盘，SSD 能大幅提升数据读写速度。</li>
+<li>合理分配服务器资源，避免其他进程占用过多资源影响数据库性能。</li>
+</ul>
+<ol start="3">
+<li>索引优化</li>
+</ol>
+<ul>
+<li>定期分析索引使用情况，使用 EXPLAIN 语句分析查询语句的执行计划，检查索引是否被有效利用。</li>
+<li>对于不再使用或影响插入性能的索引，及时进行清理或调整，避免过多索引影响数据写入效率。</li>
+</ul>
+<ol start="4">
+<li>数据归档与分区</li>
+</ol>
+<ul>
+<li>随着数据量的不断增加，可考虑对历史数据进行归档处理，将长时间不使用的数据迁移到归档表中，减少主表数据量，提高查询和插入性能。</li>
+<li>根据业务需求，对 phone_numbers 表进行分区（如按时间分区，将不同时间段的数据存储在不同分区），提高数据查询和管理效率。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%96%87%E4%BB%B6%E5%A4%84%E7%90%86-%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag"># 文件处理 数据库</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/04/20/MCP%E5%8E%9F%E7%90%86%E8%AF%A6%E8%A7%A3/" rel="next" title="MCP原理详解">
+                  MCP原理详解 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Tony</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"xiaoweige1101/xiaoweige1101.github.io","issue_term":"pathname","label":"utterances","theme":"github-light","theme_dark":"github-dark"}</script>
+<script src="/js/third-party/comments/utterances.js" defer></script>
+
+</body>
+</html>
