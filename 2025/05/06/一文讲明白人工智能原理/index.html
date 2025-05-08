@@ -20,12 +20,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"xiaoweige1101.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.23.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"show_result":true,"style":"mac"},"fold":{"enable":true,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":false,"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
 
-    <meta name="description" content="前言智能手机的出现带动了移动互联网的发展，随着GPU的算力升级推进了人工智能的发展，数据+算力+算法成为人工智能发展的必不可少的三个要素。22年11月30日，chatGPT横空出世，将人工智能又拉升到了一个全新的高度；2023年，国内外的大模型公司如雨后春笋般的涌现出来；2024年初，sora模型的出现，再一次惊艳了世人。 本次分享，主要讲述机器学习和深度学习中的概念以及相关原理，然后通过一个机器">
+    <meta name="description" content="1. 前言智能手机的出现带动了移动互联网的发展，随着GPU的算力升级推进了人工智能的发展，数据+算力+算法成为人工智能发展的必不可少的三个要素。22年11月30日，chatGPT横空出世，将人工智能又拉升到了一个全新的高度；2023年，国内外的大模型公司如雨后春笋般的涌现出来；2024年初，sora模型的出现，再一次惊艳了世人。 本次分享，主要讲述机器学习和深度学习中的概念以及相关原理，然后通过一">
 <meta property="og:type" content="article">
 <meta property="og:title" content="一文讲明白人工智能原理">
 <meta property="og:url" content="https://xiaoweige1101.github.io/2025/05/06/%E4%B8%80%E6%96%87%E8%AE%B2%E6%98%8E%E7%99%BD%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E5%8E%9F%E7%90%86/index.html">
 <meta property="og:site_name" content="Tony的博客">
-<meta property="og:description" content="前言智能手机的出现带动了移动互联网的发展，随着GPU的算力升级推进了人工智能的发展，数据+算力+算法成为人工智能发展的必不可少的三个要素。22年11月30日，chatGPT横空出世，将人工智能又拉升到了一个全新的高度；2023年，国内外的大模型公司如雨后春笋般的涌现出来；2024年初，sora模型的出现，再一次惊艳了世人。 本次分享，主要讲述机器学习和深度学习中的概念以及相关原理，然后通过一个机器">
+<meta property="og:description" content="1. 前言智能手机的出现带动了移动互联网的发展，随着GPU的算力升级推进了人工智能的发展，数据+算力+算法成为人工智能发展的必不可少的三个要素。22年11月30日，chatGPT横空出世，将人工智能又拉升到了一个全新的高度；2023年，国内外的大模型公司如雨后春笋般的涌现出来；2024年初，sora模型的出现，再一次惊艳了世人。 本次分享，主要讲述机器学习和深度学习中的概念以及相关原理，然后通过一">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://xiaoweige1101.github.io/images/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E5%8F%91%E5%B1%95%E5%8E%86%E7%A8%8B.PNG">
 <meta property="og:image" content="https://xiaoweige1101.github.io/images/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%9D%83%E9%87%8D.PNG">
@@ -55,7 +55,7 @@
 <meta property="og:image" content="https://xiaoweige1101.github.io/images/RAG2.png">
 <meta property="og:image" content="https://xiaoweige1101.github.io/images/%E4%B8%89%E9%97%A8%E9%97%AE%E9%A2%98.png">
 <meta property="article:published_time" content="2025-05-06T14:04:11.000Z">
-<meta property="article:modified_time" content="2025-05-08T11:31:53.450Z">
+<meta property="article:modified_time" content="2025-05-08T11:40:52.587Z">
 <meta property="article:author" content="Tony">
 <meta property="article:tag" content="人工智能">
 <meta name="twitter:card" content="summary">
@@ -164,7 +164,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%9D%E8%80%83%E4%B8%80%E4%B8%AA%E5%93%B2%E5%AD%A6%E9%97%AE%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">思考一个哲学问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E7%9A%84%E5%8F%91%E5%B1%95%E5%8F%B2"><span class="nav-number">3.</span> <span class="nav-text">人工智能的发展史</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0"><span class="nav-number">4.</span> <span class="nav-text">机器学习</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%9A%84%E7%9B%B8%E5%85%B3%E6%A6%82%E5%BF%B5"><span class="nav-number">4.1.</span> <span class="nav-text">机器学习的相关概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E7%9A%84%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AE%97%E6%B3%95"><span class="nav-number">4.2.</span> <span class="nav-text">常用的机器学习算法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E4%B8%AD%E7%9A%84%E7%9B%B8%E5%85%B3%E6%A6%82%E5%BF%B5"><span class="nav-number">5.</span> <span class="nav-text">深度学习中的相关概念</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%9F%E7%89%A9%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"><span class="nav-number">5.1.</span> <span class="nav-text">生物神经网络</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%BA%E5%B7%A5%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"><span class="nav-number">5.2.</span> <span class="nav-text">人工神经网络</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%BB%93%E6%9E%84"><span class="nav-number">5.3.</span> <span class="nav-text">神经网络的基本结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E7%9A%84%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0"><span class="nav-number">5.3.1.</span> <span class="nav-text">常用的激活函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E7%9A%84%E8%AE%A1%E7%AE%97%E6%96%B9%E6%B3%95"><span class="nav-number">5.3.2.</span> <span class="nav-text">常用的计算方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AI%E7%9A%84%E8%AE%A1%E7%AE%97%E5%B9%B3%E5%8F%B0"><span class="nav-number">5.3.3.</span> <span class="nav-text">AI的计算平台</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%AF%84%E4%BB%B7%E6%8C%87%E6%A0%87"><span class="nav-number">5.3.4.</span> <span class="nav-text">模型的评价指标</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%B7%E6%B7%86%E7%9F%A9%E9%98%B5"><span class="nav-number">5.4.</span> <span class="nav-text">混淆矩阵</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E4%BB%B7%E5%87%BD%E6%95%B0%E3%80%81%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0%E3%80%81%E7%9B%AE%E6%A0%87%E5%87%BD%E6%95%B0"><span class="nav-number">5.4.1.</span> <span class="nav-text">代价函数、损失函数、目标函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%E5%92%8C%E5%8F%8D%E5%90%91%E4%BC%A0%E6%92%AD"><span class="nav-number">5.5.</span> <span class="nav-text">梯度下降和反向传播</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E4%B8%AA%E4%BE%8B%E5%AD%90%E8%AE%B2%E6%98%8E%E7%99%BD%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0"><span class="nav-number">5.6.</span> <span class="nav-text">一个例子讲明白机器学习</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E4%B8%AA%E4%BE%8B%E5%AD%90%E8%AE%B2%E6%98%8E%E7%99%BD%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0"><span class="nav-number">6.</span> <span class="nav-text">一个例子讲明白深度学习</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%A8%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%9D%A5%E5%AE%9E%E7%8E%B0%E6%89%8B%E5%86%99%E6%95%B0%E5%AD%97%E8%AF%86%E5%88%AB"><span class="nav-number">6.1.</span> <span class="nav-text">用深度学习来实现手写数字识别</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%9A%84%E6%9E%84%E5%BB%BA%E5%92%8C%E5%BA%94%E7%94%A8"><span class="nav-number">7.</span> <span class="nav-text">大模型的构建和应用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A4%A7%E6%A8%A1%E5%9E%8BRAG%E6%8A%80%E6%9C%AF"><span class="nav-number">8.</span> <span class="nav-text">大模型RAG技术</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B1%80%E9%99%90%E6%80%A7"><span class="nav-number">8.1.</span> <span class="nav-text">大模型的局限性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFRAG%E6%8A%80%E6%9C%AF"><span class="nav-number">8.2.</span> <span class="nav-text">什么是RAG技术</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E4%BA%9BAI%E7%9A%84%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%BA%90"><span class="nav-number">9.</span> <span class="nav-text">一些AI的学习资源</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%80%E5%90%8E%E7%9A%84%E4%B8%80%E4%B8%AA%E6%80%9D%E8%80%83%E9%A2%98"><span class="nav-number">10.</span> <span class="nav-text">最后的一个思考题</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">1. 前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E6%80%9D%E8%80%83%E4%B8%80%E4%B8%AA%E5%93%B2%E5%AD%A6%E9%97%AE%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">2.思考一个哲学问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E7%9A%84%E5%8F%91%E5%B1%95%E5%8F%B2"><span class="nav-number">3.</span> <span class="nav-text">3.人工智能的发展史</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0"><span class="nav-number">4.</span> <span class="nav-text">4.机器学习</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%9A%84%E7%9B%B8%E5%85%B3%E6%A6%82%E5%BF%B5"><span class="nav-number">4.1.</span> <span class="nav-text">机器学习的相关概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E7%9A%84%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AE%97%E6%B3%95"><span class="nav-number">4.2.</span> <span class="nav-text">常用的机器学习算法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E4%B8%AD%E7%9A%84%E7%9B%B8%E5%85%B3%E6%A6%82%E5%BF%B5"><span class="nav-number">5.</span> <span class="nav-text">5.深度学习中的相关概念</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#5-1-%E7%94%9F%E7%89%A9%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"><span class="nav-number">5.1.</span> <span class="nav-text">5.1 生物神经网络</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-2-%E4%BA%BA%E5%B7%A5%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"><span class="nav-number">5.2.</span> <span class="nav-text">5.2 人工神经网络</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-3-%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%BB%93%E6%9E%84"><span class="nav-number">5.3.</span> <span class="nav-text">5.3 神经网络的基本结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-3-1-%E5%B8%B8%E7%94%A8%E7%9A%84%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0"><span class="nav-number">5.3.1.</span> <span class="nav-text">5.3.1 常用的激活函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-3-2-%E5%B8%B8%E7%94%A8%E7%9A%84%E8%AE%A1%E7%AE%97%E6%96%B9%E6%B3%95"><span class="nav-number">5.3.2.</span> <span class="nav-text">5.3.2 常用的计算方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-3-3-AI%E7%9A%84%E8%AE%A1%E7%AE%97%E5%B9%B3%E5%8F%B0"><span class="nav-number">5.3.3.</span> <span class="nav-text">5.3.3 AI的计算平台</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-3-4-%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%AF%84%E4%BB%B7%E6%8C%87%E6%A0%87"><span class="nav-number">5.3.4.</span> <span class="nav-text">5.3.4 模型的评价指标</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-4-%E6%B7%B7%E6%B7%86%E7%9F%A9%E9%98%B5"><span class="nav-number">5.4.</span> <span class="nav-text">5.4 混淆矩阵</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-5-%E4%BB%A3%E4%BB%B7%E5%87%BD%E6%95%B0%E3%80%81%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0%E3%80%81%E7%9B%AE%E6%A0%87%E5%87%BD%E6%95%B0"><span class="nav-number">5.5.</span> <span class="nav-text">5.5 代价函数、损失函数、目标函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-6-%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%E5%92%8C%E5%8F%8D%E5%90%91%E4%BC%A0%E6%92%AD"><span class="nav-number">5.6.</span> <span class="nav-text">5.6 梯度下降和反向传播</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-%E4%B8%80%E4%B8%AA%E4%BE%8B%E5%AD%90%E8%AE%B2%E6%98%8E%E7%99%BD%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0"><span class="nav-number">6.</span> <span class="nav-text">6. 一个例子讲明白机器学习</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#7-%E4%B8%80%E4%B8%AA%E4%BE%8B%E5%AD%90%E8%AE%B2%E6%98%8E%E7%99%BD%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0"><span class="nav-number">7.</span> <span class="nav-text">7 一个例子讲明白深度学习</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#7-1-%E7%94%A8%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%9D%A5%E5%AE%9E%E7%8E%B0%E6%89%8B%E5%86%99%E6%95%B0%E5%AD%97%E8%AF%86%E5%88%AB"><span class="nav-number">7.1.</span> <span class="nav-text">7.1 用深度学习来实现手写数字识别</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#8-%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%9A%84%E6%9E%84%E5%BB%BA%E5%92%8C%E5%BA%94%E7%94%A8"><span class="nav-number">8.</span> <span class="nav-text">8. 大模型的构建和应用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#9-%E5%A4%A7%E6%A8%A1%E5%9E%8BRAG%E6%8A%80%E6%9C%AF"><span class="nav-number">9.</span> <span class="nav-text">9. 大模型RAG技术</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#9-1-%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B1%80%E9%99%90%E6%80%A7"><span class="nav-number">9.1.</span> <span class="nav-text">9.1 大模型的局限性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9-2-%E4%BB%80%E4%B9%88%E6%98%AFRAG%E6%8A%80%E6%9C%AF"><span class="nav-number">9.2.</span> <span class="nav-text">9.2 什么是RAG技术</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#10-%E4%B8%80%E4%BA%9BAI%E7%9A%84%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%BA%90"><span class="nav-number">10.</span> <span class="nav-text">10 一些AI的学习资源</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#11-%E6%9C%80%E5%90%8E%E7%9A%84%E4%B8%80%E4%B8%AA%E6%80%9D%E8%80%83%E9%A2%98"><span class="nav-number">11.</span> <span class="nav-text">11. 最后的一个思考题</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -254,7 +254,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-05-08 19:31:53" itemprop="dateModified" datetime="2025-05-08T19:31:53+08:00">2025-05-08</time>
+      <time title="修改时间：2025-05-08 19:40:52" itemprop="dateModified" datetime="2025-05-08T19:40:52+08:00">2025-05-08</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -275,17 +275,17 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>智能手机的出现带动了移动互联网的发展，随着GPU的算力升级推进了人工智能的发展，数据+算力+算法成为人工智能发展的必不可少的三个要素。22年11月30日，chatGPT横空出世，将人工智能又拉升到了一个全新的高度；2023年，国内外的大模型公司如雨后春笋般的涌现出来；2024年初，sora模型的出现，再一次惊艳了世人。</p>
+    <div class="post-body" itemprop="articleBody"><h1 id="1-前言"><a href="#1-前言" class="headerlink" title="1. 前言"></a>1. 前言</h1><p>智能手机的出现带动了移动互联网的发展，随着GPU的算力升级推进了人工智能的发展，数据+算力+算法成为人工智能发展的必不可少的三个要素。22年11月30日，chatGPT横空出世，将人工智能又拉升到了一个全新的高度；2023年，国内外的大模型公司如雨后春笋般的涌现出来；2024年初，sora模型的出现，再一次惊艳了世人。</p>
 <p>本次分享，主要讲述机器学习和深度学习中的概念以及相关原理，然后通过一个机器学习的例子和深度学习的例子，进行代码层面的讲解，最后，部署一下当前比较流行的大模型私有化服务，以及RAG技术实现大模型的商用场景。</p>
 <p>人工智能到底难不难，门槛高不高？<br>个人感觉，人工智能虽然理论较为复杂，但是借助开源社区和工具包，实践并不困难；</p>
-<h1 id="思考一个哲学问题"><a href="#思考一个哲学问题" class="headerlink" title="思考一个哲学问题"></a>思考一个哲学问题</h1><p>你相信世界的本质是数学， 数学可以描述一切吗？</p>
+<h1 id="2-思考一个哲学问题"><a href="#2-思考一个哲学问题" class="headerlink" title="2.思考一个哲学问题"></a>2.思考一个哲学问题</h1><p>你相信世界的本质是数学， 数学可以描述一切吗？</p>
 <ul>
 <li>牛顿的万有引力公式，用数学来描述了引力；</li>
 <li>麦克斯韦用麦克斯韦方程组，统一了电和磁；</li>
 <li>爱因斯坦用相对论，统一了时间、空间、质量、能量；</li>
 <li>杨振宁用杨·米尔斯方程，统一了电磁力，强相互作用力，弱相互作用力；至此，大一统理论完成了3&#x2F;4；<br>以上的划时代的科学家分别用数学公式，揭示了宇宙运行的奥秘。爱因斯坦说：这个世界最不可被理解的地方就是它居然可以被理解，杨振宁说：造物者也许是存在的，至少宇宙不是偶然。根本原因就是，宇宙的规律居然可以用数学公式来描述。<br>如果说，这个世界是可以用数学来表示的，那么所有的图像、声音、语言、思想都应该可以用数学来表示，但问题是，我们无法获得这个公式。而人工智能的基本思想是，用维度足够高，参数足够多的非线性公式来拟合，通过足够多的样本来进行训练，不停的调整这个庞大而又复杂的公式，不求绝对精确，但是要无限逼近真实公式的一种算法。<br>因此，人工智能是建立在，假设这个世界是可以用数学来描述的基础上而进行发展的，我们用模型+参数来拟合这个世界。最近十几年，随着大数据和计算机算力的发展，使得AI的发展得到了飞速发展。</li>
 </ul>
-<h1 id="人工智能的发展史"><a href="#人工智能的发展史" class="headerlink" title="人工智能的发展史"></a>人工智能的发展史</h1><div align="center">
+<h1 id="3-人工智能的发展史"><a href="#3-人工智能的发展史" class="headerlink" title="3.人工智能的发展史"></a>3.人工智能的发展史</h1><div align="center">
 <img src="/images/人工智能发展历程.PNG" alt="人工智能发展史" width="70%">
 </div>
 
@@ -394,7 +394,7 @@
 <blockquote>
 <p>一个比较有意思的现象：<br>工程上，其实有很多伟大的发明被证实很有效，但是至今没有整明白其原理，比如：二甲双胍、阿司匹林这些药物的原理，航空上喷气式发动机的原理，以及包括我们的卷积神经网络，到目前为止都没人能证明为什么会有这么好的效果，chatGPT的创始人也对大模型取得的效果感到意外；</p>
 </blockquote>
-<h1 id="机器学习"><a href="#机器学习" class="headerlink" title="机器学习"></a>机器学习</h1><h2 id="机器学习的相关概念"><a href="#机器学习的相关概念" class="headerlink" title="机器学习的相关概念"></a>机器学习的相关概念</h2><ul>
+<h1 id="4-机器学习"><a href="#4-机器学习" class="headerlink" title="4.机器学习"></a>4.机器学习</h1><h2 id="机器学习的相关概念"><a href="#机器学习的相关概念" class="headerlink" title="机器学习的相关概念"></a>机器学习的相关概念</h2><ul>
 <li>定义：机器学习是这样的领域,它赋予计算机学习的能力,(这种学习能力)不是通过显著式编程获得的。</li>
 <li>显著式编程：需要我们帮助程序预先了解好执行环境，并让其根据原先既定的逻辑一步步执行下去。</li>
 <li>非显著编程：计算机通过数据、经验自动的学习归纳，完成人类交给的任务。在执行中，程序往往有一个“收益函数”与”激活函数”对一个当前发生事件进行权重分析并做出下一步行为执行的决策。</li>
@@ -523,13 +523,13 @@
 <td>其本质思想就是将高维的线性相关的各个特征分量分解为低维线性无关的分量，可以通俗的理解为，原始数据在高维的特征空间中的表达可以近似的以低维空间来表征，并且保证这个低维空间能够表征高维空间中的绝大部分信息。</td>
 </tr>
 </tbody></table>
-<h1 id="深度学习中的相关概念"><a href="#深度学习中的相关概念" class="headerlink" title="深度学习中的相关概念"></a>深度学习中的相关概念</h1><h2 id="生物神经网络"><a href="#生物神经网络" class="headerlink" title="生物神经网络"></a>生物神经网络</h2><div align="center">
+<h1 id="5-深度学习中的相关概念"><a href="#5-深度学习中的相关概念" class="headerlink" title="5.深度学习中的相关概念"></a>5.深度学习中的相关概念</h1><h2 id="5-1-生物神经网络"><a href="#5-1-生物神经网络" class="headerlink" title="5.1 生物神经网络"></a>5.1 生物神经网络</h2><div align="center">
 <img src="/images/生物神经网络.png" alt="" width="70%">
 </div>
 
 <p>一个神经源是一个可以接收发射脉冲信号的细胞，在细胞体核心之外有树突和轴突；树突接收其他神经元的脉冲信号，而轴突将神经元的输出脉冲传递给其他神经源；一个神经源传递给不同神经元的输出是相同的，并且在突出部分发生信息的交换传递中无数个生物神经元的组合交互就形成了生物神经网络，使人具备了处理复杂信息的能力。</p>
-<h2 id="人工神经网络"><a href="#人工神经网络" class="headerlink" title="人工神经网络"></a>人工神经网络</h2><p>人工神经网络也试图模仿生物神经网络的工作原理对应的神经源形式。人工神经网络(Aritificial Neural Network，ANN)是理论化的人脑神经网络的数学模型，是基于模仿大脑神经网络结构和功能而建立的一种信息处理系统。它实际上是一个由大量简单元件相互连接而成的复杂网络，具有高度的非线性，能够进行复杂的逻辑操作和非线性关系实现的系统。<br>人工神经网络也被称为“神经网络”或“人工神经系统”。通常缩写人工神经网络并将它们称为“ANN”或简称为“NN”。<br>对于一个被视为神经网络的系统，它必须包含一个带标签的图结构，图中的每个节点都执行一些简单的计算。从图论中，我们知道图由一组节点（即顶点）和一组将节点对连接在一起的连接（即边）组成。</p>
-<h2 id="神经网络的基本结构"><a href="#神经网络的基本结构" class="headerlink" title="神经网络的基本结构"></a>神经网络的基本结构</h2><div align="center">
+<h2 id="5-2-人工神经网络"><a href="#5-2-人工神经网络" class="headerlink" title="5.2 人工神经网络"></a>5.2 人工神经网络</h2><p>人工神经网络也试图模仿生物神经网络的工作原理对应的神经源形式。人工神经网络(Aritificial Neural Network，ANN)是理论化的人脑神经网络的数学模型，是基于模仿大脑神经网络结构和功能而建立的一种信息处理系统。它实际上是一个由大量简单元件相互连接而成的复杂网络，具有高度的非线性，能够进行复杂的逻辑操作和非线性关系实现的系统。<br>人工神经网络也被称为“神经网络”或“人工神经系统”。通常缩写人工神经网络并将它们称为“ANN”或简称为“NN”。<br>对于一个被视为神经网络的系统，它必须包含一个带标签的图结构，图中的每个节点都执行一些简单的计算。从图论中，我们知道图由一组节点（即顶点）和一组将节点对连接在一起的连接（即边）组成。</p>
+<h2 id="5-3-神经网络的基本结构"><a href="#5-3-神经网络的基本结构" class="headerlink" title="5.3 神经网络的基本结构"></a>5.3 神经网络的基本结构</h2><div align="center">
 <img src="/images/神经网络基本结构.png" alt="" width="70%">
 </div>
 
@@ -553,7 +553,7 @@
 <img src="/images/卷积神经网络.png" alt="" width="70%">
 </div>
 
-<h3 id="常用的激活函数"><a href="#常用的激活函数" class="headerlink" title="常用的激活函数"></a>常用的激活函数</h3><p>激活函数的主要作用是完成数据的非线性变换，解决线性模型的表达、分类能力不足的问题。激活函数的主要作用是改变之前数据的线性关系，如果网络中全部是线性变换，则多层网络可以通过矩阵变换，直接转换成一层神经网络。所以激活函数的存在，使得神经网络的“多层”有了实际的意义，使网络更加强大，增加网络的能力，使它可以学习复杂的事物，复杂的数据，以及表示输入输出之间非线性的复杂的任意函数映射。</p>
+<h3 id="5-3-1-常用的激活函数"><a href="#5-3-1-常用的激活函数" class="headerlink" title="5.3.1 常用的激活函数"></a>5.3.1 常用的激活函数</h3><p>激活函数的主要作用是完成数据的非线性变换，解决线性模型的表达、分类能力不足的问题。激活函数的主要作用是改变之前数据的线性关系，如果网络中全部是线性变换，则多层网络可以通过矩阵变换，直接转换成一层神经网络。所以激活函数的存在，使得神经网络的“多层”有了实际的意义，使网络更加强大，增加网络的能力，使它可以学习复杂的事物，复杂的数据，以及表示输入输出之间非线性的复杂的任意函数映射。</p>
 <div align="center">
 <img src="/images/常用的激活函数1.png" alt="" width="70%">
 </div>
@@ -568,10 +568,10 @@
   <img src="/images/激活函数-RELU2.png" alt="激活函数-RELU2" style="width: 48%;">
 </div>
 
-<h3 id="常用的计算方法"><a href="#常用的计算方法" class="headerlink" title="常用的计算方法"></a>常用的计算方法</h3><ul>
+<h3 id="5-3-2-常用的计算方法"><a href="#5-3-2-常用的计算方法" class="headerlink" title="5.3.2 常用的计算方法"></a>5.3.2 常用的计算方法</h3><ul>
 <li>卷积，池化等概念</li>
 </ul>
-<h3 id="AI的计算平台"><a href="#AI的计算平台" class="headerlink" title="AI的计算平台"></a>AI的计算平台</h3><ul>
+<h3 id="5-3-3-AI的计算平台"><a href="#5-3-3-AI的计算平台" class="headerlink" title="5.3.3 AI的计算平台"></a>5.3.3 AI的计算平台</h3><ul>
 <li>TensorFlow: 由Google开发的开源机器学习框架，在国内也很受欢迎，拥有广泛的用户及社区支持。</li>
 <li>PyTorch: 由Facebook开发，国内使用较为广泛，特别是在学术界和科研领域中广受欢迎。</li>
 <li>Keras：是一个在Python中使用的高级神经网络库，它运行在TensorFlow之上。Keras的设计理念是“用户友好，模块化，易于扩展”，这使得Keras对于初学者非常友好。然而，对于一些复杂的模型，Keras可能没有TensorFlow和PyTorch那么强大。</li>
@@ -580,10 +580,10 @@
 <li>MindSpore: 华为近年来推出的开源AI框架，支持多种硬件平台，国内也享有较高声誉。</li>
 <li>NCNN: 腾讯优图推出的轻量级的深度学习框架，适用于手机端、嵌入式设备等场景。</li>
 </ul>
-<h3 id="模型的评价指标"><a href="#模型的评价指标" class="headerlink" title="模型的评价指标"></a>模型的评价指标</h3><ul>
+<h3 id="5-3-4-模型的评价指标"><a href="#5-3-4-模型的评价指标" class="headerlink" title="5.3.4 模型的评价指标"></a>5.3.4 模型的评价指标</h3><ul>
 <li>TP、TN、FP、FN概念</li>
 </ul>
-<h2 id="混淆矩阵"><a href="#混淆矩阵" class="headerlink" title="混淆矩阵"></a>混淆矩阵</h2><table>
+<h2 id="5-4-混淆矩阵"><a href="#5-4-混淆矩阵" class="headerlink" title="5.4 混淆矩阵"></a>5.4 混淆矩阵</h2><table>
 <thead>
 <tr>
 <th></th>
@@ -654,7 +654,7 @@
 </div>
 
 
-<h3 id="代价函数、损失函数、目标函数"><a href="#代价函数、损失函数、目标函数" class="headerlink" title="代价函数、损失函数、目标函数"></a>代价函数、损失函数、目标函数</h3><ul>
+<h2 id="5-5-代价函数、损失函数、目标函数"><a href="#5-5-代价函数、损失函数、目标函数" class="headerlink" title="5.5 代价函数、损失函数、目标函数"></a>5.5 代价函数、损失函数、目标函数</h2><ul>
 <li><p>损失函数：损失函数(Loss Function)衡量了模型$f$对样本$x$的预测结果$\hat{y}&#x3D;f(x)$与真实标签 $y&#x3D;y(x)$ 的距离。</p>
 <ul>
 <li>Square Loss: $ L_{square}(\hat{y},y)&#x3D;(\hat{y}-y)^2 $</li>
@@ -676,14 +676,14 @@
 <ul>
 <li>过拟合产生的原因和解决方法</li>
 </ul>
-<h2 id="梯度下降和反向传播"><a href="#梯度下降和反向传播" class="headerlink" title="梯度下降和反向传播"></a>梯度下降和反向传播</h2><ul>
+<h2 id="5-6-梯度下降和反向传播"><a href="#5-6-梯度下降和反向传播" class="headerlink" title="5.6 梯度下降和反向传播"></a>5.6 梯度下降和反向传播</h2><ul>
 <li>梯度下降和反向传播</li>
 </ul>
-<h2 id="一个例子讲明白机器学习"><a href="#一个例子讲明白机器学习" class="headerlink" title="一个例子讲明白机器学习"></a>一个例子讲明白机器学习</h2><ul>
+<h1 id="6-一个例子讲明白机器学习"><a href="#6-一个例子讲明白机器学习" class="headerlink" title="6. 一个例子讲明白机器学习"></a>6. 一个例子讲明白机器学习</h1><ul>
 <li>贝叶斯模型技术分享</li>
 </ul>
-<h1 id="一个例子讲明白深度学习"><a href="#一个例子讲明白深度学习" class="headerlink" title="一个例子讲明白深度学习"></a>一个例子讲明白深度学习</h1><h2 id="用深度学习来实现手写数字识别"><a href="#用深度学习来实现手写数字识别" class="headerlink" title="用深度学习来实现手写数字识别"></a>用深度学习来实现手写数字识别</h2><p>MNIST手写数字数据集来源于是美国国家标准与技术研究所，是著名的公开数据集之一。数据集中的数字图片是由250个不同职业的人纯手写绘制，数据集获取的网址为：<a target="_blank" rel="noopener" href="http://yann.lecun.com/exdb/mnist/%EF%BC%88%E4%B8%8B%E8%BD%BD%E5%90%8E%E9%9C%80%E8%A7%A3%E5%8E%8B%EF%BC%89%E3%80%82">http://yann.lecun.com/exdb/mnist/（下载后需解压）。</a><br>MNIST手写数字数据集中包含了70000张图片，其中60000张为训练数据，10000为测试数据，70000张图片均是28*28。</p>
-<h1 id="大模型的构建和应用"><a href="#大模型的构建和应用" class="headerlink" title="大模型的构建和应用"></a>大模型的构建和应用</h1><ul>
+<h1 id="7-一个例子讲明白深度学习"><a href="#7-一个例子讲明白深度学习" class="headerlink" title="7 一个例子讲明白深度学习"></a>7 一个例子讲明白深度学习</h1><h2 id="7-1-用深度学习来实现手写数字识别"><a href="#7-1-用深度学习来实现手写数字识别" class="headerlink" title="7.1 用深度学习来实现手写数字识别"></a>7.1 用深度学习来实现手写数字识别</h2><p>MNIST手写数字数据集来源于是美国国家标准与技术研究所，是著名的公开数据集之一。数据集中的数字图片是由250个不同职业的人纯手写绘制，数据集获取的网址为：<a target="_blank" rel="noopener" href="http://yann.lecun.com/exdb/mnist/%EF%BC%88%E4%B8%8B%E8%BD%BD%E5%90%8E%E9%9C%80%E8%A7%A3%E5%8E%8B%EF%BC%89%E3%80%82">http://yann.lecun.com/exdb/mnist/（下载后需解压）。</a><br>MNIST手写数字数据集中包含了70000张图片，其中60000张为训练数据，10000为测试数据，70000张图片均是28*28。</p>
+<h1 id="8-大模型的构建和应用"><a href="#8-大模型的构建和应用" class="headerlink" title="8. 大模型的构建和应用"></a>8. 大模型的构建和应用</h1><ul>
 <li>ChatGLM，<a target="_blank" rel="noopener" href="https://github.com/THUDM/ChatGLM-6B">https://github.com/THUDM/ChatGLM-6B</a><br>个人尝试部署了ChatGLM的，由于我的GPU显卡(2080TI, 11G)的内存较小，将模型精度从16位降低到了8位，运行效果如下：</li>
 </ul>
 <div align="center">
@@ -691,13 +691,13 @@
 </div>
 
 
-<h1 id="大模型RAG技术"><a href="#大模型RAG技术" class="headerlink" title="大模型RAG技术"></a>大模型RAG技术</h1><h2 id="大模型的局限性"><a href="#大模型的局限性" class="headerlink" title="大模型的局限性"></a>大模型的局限性</h2><p>通用的基础大模型基本无法满足我们的实际业务需求，主要有以下几方面原因：</p>
+<h1 id="9-大模型RAG技术"><a href="#9-大模型RAG技术" class="headerlink" title="9. 大模型RAG技术"></a>9. 大模型RAG技术</h1><h2 id="9-1-大模型的局限性"><a href="#9-1-大模型的局限性" class="headerlink" title="9.1 大模型的局限性"></a>9.1 大模型的局限性</h2><p>通用的基础大模型基本无法满足我们的实际业务需求，主要有以下几方面原因：</p>
 <ul>
 <li>知识的局限性：模型自身的知识完全源于它的训练数据，而现有的主流大模型（ChatGPT、文心一言、通义千问…）的训练集基本都是构建于网络公开的数据，对于一些实时性的、非公开的或离线的数据是无法获取到的，这部分知识也就无从具备。</li>
 <li>幻觉问题：所有的AI模型的底层原理都是基于数学概率，其模型输出实质上是一系列数值运算，大模型也不例外，所以它有时候会一本正经地胡说八道，尤其是在大模型自身不具备某一方面的知识或不擅长的场景。而这种幻觉问题的区分是比较困难的，因为它要求使用者自身具备相应领域的知识。</li>
 <li>数据安全性：对于企业来说，数据安全至关重要，没有企业愿意承担数据泄露的风险，将自身的私域数据上传第三方平台进行训练。这也导致完全依赖通用大模型自身能力的应用方案不得不在数据安全和效果方面进行取舍。</li>
 </ul>
-<h2 id="什么是RAG技术"><a href="#什么是RAG技术" class="headerlink" title="什么是RAG技术"></a>什么是RAG技术</h2><p>检索增强生成（Retrieval Augmented Generation），简称 RAG，简单来讲，RAG就是通过检索获取相关的知识并将其融入Prompt，让大模型能够参考相应的知识从而给出合理回答。因此，可以将RAG的核心理解为“检索+生成”，前者主要是利用向量数据库的高效存储和检索能力，召回目标知识；后者则是利用大模型和Prompt工程，将召回的知识合理利用，生成目标答案。</p>
+<h2 id="9-2-什么是RAG技术"><a href="#9-2-什么是RAG技术" class="headerlink" title="9.2 什么是RAG技术"></a>9.2 什么是RAG技术</h2><p>检索增强生成（Retrieval Augmented Generation），简称 RAG，简单来讲，RAG就是通过检索获取相关的知识并将其融入Prompt，让大模型能够参考相应的知识从而给出合理回答。因此，可以将RAG的核心理解为“检索+生成”，前者主要是利用向量数据库的高效存储和检索能力，召回目标知识；后者则是利用大模型和Prompt工程，将召回的知识合理利用，生成目标答案。</p>
 <div align="center">
 <img src="/images/RAG.png" alt="" width="70%">
 </div>
@@ -730,11 +730,11 @@
 <blockquote>
 <p>通过RAG技术，我们可以融合创蓝官网的数据，做出属于自己的客服机器人。</p>
 </blockquote>
-<h1 id="一些AI的学习资源"><a href="#一些AI的学习资源" class="headerlink" title="一些AI的学习资源"></a>一些AI的学习资源</h1><ul>
+<h1 id="10-一些AI的学习资源"><a href="#10-一些AI的学习资源" class="headerlink" title="10 一些AI的学习资源"></a>10 一些AI的学习资源</h1><ul>
 <li>吴恩达的AI公开课</li>
 <li>李沐的AI公开课</li>
 </ul>
-<h1 id="最后的一个思考题"><a href="#最后的一个思考题" class="headerlink" title="最后的一个思考题"></a>最后的一个思考题</h1><div align="center">
+<h1 id="11-最后的一个思考题"><a href="#11-最后的一个思考题" class="headerlink" title="11. 最后的一个思考题"></a>11. 最后的一个思考题</h1><div align="center">
 <img src="/images/三门问题.png" alt="" width="70%">
 </div>
 
