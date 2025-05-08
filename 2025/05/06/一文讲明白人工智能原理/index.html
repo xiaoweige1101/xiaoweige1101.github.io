@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"xiaoweige1101.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.23.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"show_result":true,"style":"mac"},"fold":{"enable":true,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":false,"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="前言智能手机的出现带动了移动互联网的发展，随着GPU的算力升级推进了人工智能的发展，数据+算力+算法成为人工智能发展的必不可少的三个要素。22年11月30日，chatGPT横空出世，将人工智能又拉升到了一个全新的高度；2023年，国内外的大模型公司如雨后春笋般的涌现出来；2024年初，sora模型的出现，再一次惊艳了世人。 本次分享，主要讲述机器学习和深度学习中的概念以及相关原理，然后通过一个机器">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一文讲明白人工智能原理">
+<meta property="og:url" content="https://xiaoweige1101.github.io/2025/05/06/%E4%B8%80%E6%96%87%E8%AE%B2%E6%98%8E%E7%99%BD%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E5%8E%9F%E7%90%86/index.html">
+<meta property="og:site_name" content="Tony的博客">
+<meta property="og:description" content="前言智能手机的出现带动了移动互联网的发展，随着GPU的算力升级推进了人工智能的发展，数据+算力+算法成为人工智能发展的必不可少的三个要素。22年11月30日，chatGPT横空出世，将人工智能又拉升到了一个全新的高度；2023年，国内外的大模型公司如雨后春笋般的涌现出来；2024年初，sora模型的出现，再一次惊艳了世人。 本次分享，主要讲述机器学习和深度学习中的概念以及相关原理，然后通过一个机器">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://xiaoweige1101.github.io/images/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E5%8F%91%E5%B1%95%E5%8E%86%E7%A8%8B.PNG">
+<meta property="og:image" content="https://xiaoweige1101.github.io/images/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%9D%83%E9%87%8D.PNG">
+<meta property="og:image" content="https://xiaoweige1101.github.io/images/%E6%84%9F%E7%9F%A5%E6%9C%BA.PNG">
+<meta property="og:image" content="https://xiaoweige1101.github.io/images/%E7%8E%BB%E5%B0%94%E5%85%B9%E6%9B%BC%E6%9C%BA.PNG">
+<meta property="og:image" content="https://xiaoweige1101.github.io/images/BP%E7%BD%91%E7%BB%9C.PNG">
+<meta property="og:image" content="https://xiaoweige1101.github.io/images/LeNet.PNG">
+<meta property="og:image" content="https://xiaoweige1101.github.io/images/LSTM.PNG">
+<meta property="og:image" content="https://xiaoweige1101.github.io/images/SVM.PNG">
+<meta property="og:image" content="https://xiaoweige1101.github.io/images/ReLU.PNG">
+<meta property="og:image" content="https://xiaoweige1101.github.io/images/%E8%8F%8A%E8%8A%B1.png">
+<meta property="og:image" content="https://xiaoweige1101.github.io/images/%E5%B8%B8%E7%94%A8%E7%9A%84%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AE%97%E6%B3%95.png">
+<meta property="og:image" content="https://xiaoweige1101.github.io/images/%E7%94%9F%E7%89%A9%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C.png">
+<meta property="og:image" content="https://xiaoweige1101.github.io/images/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E5%9F%BA%E6%9C%AC%E7%BB%93%E6%9E%84.png">
+<meta property="og:image" content="https://xiaoweige1101.github.io/images/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C.png">
+<meta property="og:image" content="https://xiaoweige1101.github.io/images/%E5%B8%B8%E7%94%A8%E7%9A%84%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B01.png">
+<meta property="og:image" content="https://xiaoweige1101.github.io/images/%E5%B8%B8%E7%94%A8%E7%9A%84%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B02.png">
+<meta property="og:image" content="https://xiaoweige1101.github.io/images/%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0-RELU.png">
+<meta property="og:image" content="https://xiaoweige1101.github.io/images/%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0-RELU2.png">
+<meta property="og:image" content="https://xiaoweige1101.github.io/images/ROC%E6%9B%B2%E7%BA%BF.png">
+<meta property="og:image" content="https://xiaoweige1101.github.io/images/AUC%E6%9B%B2%E7%BA%BF.png">
+<meta property="og:image" content="https://xiaoweige1101.github.io/images/%E5%8F%AC%E5%9B%9E%E7%8E%87.png">
+<meta property="og:image" content="https://xiaoweige1101.github.io/images/%E5%8F%AC%E5%9B%9E%E7%8E%872.png">
+<meta property="og:image" content="https://xiaoweige1101.github.io/images/%E5%8F%AC%E5%9B%9E%E7%8E%873.png">
+<meta property="og:image" content="https://xiaoweige1101.github.io/images/chatGLM.png">
+<meta property="og:image" content="https://xiaoweige1101.github.io/images/RAG.png">
+<meta property="og:image" content="https://xiaoweige1101.github.io/images/RAG2.png">
+<meta property="og:image" content="https://xiaoweige1101.github.io/images/%E4%B8%89%E9%97%A8%E9%97%AE%E9%A2%98.png">
+<meta property="article:published_time" content="2025-05-06T14:04:11.000Z">
+<meta property="article:modified_time" content="2025-05-08T11:31:53.450Z">
+<meta property="article:author" content="Tony">
+<meta property="article:tag" content="人工智能">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://xiaoweige1101.github.io/images/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E5%8F%91%E5%B1%95%E5%8E%86%E7%A8%8B.PNG">
+
+
+<link rel="canonical" href="https://xiaoweige1101.github.io/2025/05/06/%E4%B8%80%E6%96%87%E8%AE%B2%E6%98%8E%E7%99%BD%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E5%8E%9F%E7%90%86/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://xiaoweige1101.github.io/2025/05/06/%E4%B8%80%E6%96%87%E8%AE%B2%E6%98%8E%E7%99%BD%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E5%8E%9F%E7%90%86/","path":"2025/05/06/一文讲明白人工智能原理/","title":"一文讲明白人工智能原理"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>一文讲明白人工智能原理 | Tony的博客</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"mhchem":false,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js" defer></script>
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Tony的博客</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">行动大于完美</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%9D%E8%80%83%E4%B8%80%E4%B8%AA%E5%93%B2%E5%AD%A6%E9%97%AE%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">思考一个哲学问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E7%9A%84%E5%8F%91%E5%B1%95%E5%8F%B2"><span class="nav-number">3.</span> <span class="nav-text">人工智能的发展史</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0"><span class="nav-number">4.</span> <span class="nav-text">机器学习</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%9A%84%E7%9B%B8%E5%85%B3%E6%A6%82%E5%BF%B5"><span class="nav-number">4.1.</span> <span class="nav-text">机器学习的相关概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E7%9A%84%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AE%97%E6%B3%95"><span class="nav-number">4.2.</span> <span class="nav-text">常用的机器学习算法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E4%B8%AD%E7%9A%84%E7%9B%B8%E5%85%B3%E6%A6%82%E5%BF%B5"><span class="nav-number">5.</span> <span class="nav-text">深度学习中的相关概念</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%9F%E7%89%A9%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"><span class="nav-number">5.1.</span> <span class="nav-text">生物神经网络</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%BA%E5%B7%A5%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"><span class="nav-number">5.2.</span> <span class="nav-text">人工神经网络</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%BB%93%E6%9E%84"><span class="nav-number">5.3.</span> <span class="nav-text">神经网络的基本结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E7%9A%84%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0"><span class="nav-number">5.3.1.</span> <span class="nav-text">常用的激活函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E7%9A%84%E8%AE%A1%E7%AE%97%E6%96%B9%E6%B3%95"><span class="nav-number">5.3.2.</span> <span class="nav-text">常用的计算方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AI%E7%9A%84%E8%AE%A1%E7%AE%97%E5%B9%B3%E5%8F%B0"><span class="nav-number">5.3.3.</span> <span class="nav-text">AI的计算平台</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%AF%84%E4%BB%B7%E6%8C%87%E6%A0%87"><span class="nav-number">5.3.4.</span> <span class="nav-text">模型的评价指标</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%B7%E6%B7%86%E7%9F%A9%E9%98%B5"><span class="nav-number">5.4.</span> <span class="nav-text">混淆矩阵</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E4%BB%B7%E5%87%BD%E6%95%B0%E3%80%81%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0%E3%80%81%E7%9B%AE%E6%A0%87%E5%87%BD%E6%95%B0"><span class="nav-number">5.4.1.</span> <span class="nav-text">代价函数、损失函数、目标函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%E5%92%8C%E5%8F%8D%E5%90%91%E4%BC%A0%E6%92%AD"><span class="nav-number">5.5.</span> <span class="nav-text">梯度下降和反向传播</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E4%B8%AA%E4%BE%8B%E5%AD%90%E8%AE%B2%E6%98%8E%E7%99%BD%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0"><span class="nav-number">5.6.</span> <span class="nav-text">一个例子讲明白机器学习</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E4%B8%AA%E4%BE%8B%E5%AD%90%E8%AE%B2%E6%98%8E%E7%99%BD%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0"><span class="nav-number">6.</span> <span class="nav-text">一个例子讲明白深度学习</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%A8%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%9D%A5%E5%AE%9E%E7%8E%B0%E6%89%8B%E5%86%99%E6%95%B0%E5%AD%97%E8%AF%86%E5%88%AB"><span class="nav-number">6.1.</span> <span class="nav-text">用深度学习来实现手写数字识别</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%9A%84%E6%9E%84%E5%BB%BA%E5%92%8C%E5%BA%94%E7%94%A8"><span class="nav-number">7.</span> <span class="nav-text">大模型的构建和应用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A4%A7%E6%A8%A1%E5%9E%8BRAG%E6%8A%80%E6%9C%AF"><span class="nav-number">8.</span> <span class="nav-text">大模型RAG技术</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B1%80%E9%99%90%E6%80%A7"><span class="nav-number">8.1.</span> <span class="nav-text">大模型的局限性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFRAG%E6%8A%80%E6%9C%AF"><span class="nav-number">8.2.</span> <span class="nav-text">什么是RAG技术</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E4%BA%9BAI%E7%9A%84%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%BA%90"><span class="nav-number">9.</span> <span class="nav-text">一些AI的学习资源</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%80%E5%90%8E%E7%9A%84%E4%B8%80%E4%B8%AA%E6%80%9D%E8%80%83%E9%A2%98"><span class="nav-number">10.</span> <span class="nav-text">最后的一个思考题</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Tony</p>
+  <div class="site-description" itemprop="description">找到兴趣，持续投入时间，然后做到极致！</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xiaoweige1101" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xiaoweige1101" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://xiaoweige1101.github.io/2025/05/06/%E4%B8%80%E6%96%87%E8%AE%B2%E6%98%8E%E7%99%BD%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E5%8E%9F%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Tony">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Tony的博客">
+      <meta itemprop="description" content="找到兴趣，持续投入时间，然后做到极致！">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="一文讲明白人工智能原理 | Tony的博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          一文讲明白人工智能原理
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-05-06 22:04:11" itemprop="dateCreated datePublished" datetime="2025-05-06T22:04:11+08:00">2025-05-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-05-08 19:31:53" itemprop="dateModified" datetime="2025-05-08T19:31:53+08:00">2025-05-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%8A%80%E6%9C%AF%E6%96%87%E7%AB%A0/" itemprop="url" rel="index"><span itemprop="name">技术文章</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>智能手机的出现带动了移动互联网的发展，随着GPU的算力升级推进了人工智能的发展，数据+算力+算法成为人工智能发展的必不可少的三个要素。22年11月30日，chatGPT横空出世，将人工智能又拉升到了一个全新的高度；2023年，国内外的大模型公司如雨后春笋般的涌现出来；2024年初，sora模型的出现，再一次惊艳了世人。</p>
+<p>本次分享，主要讲述机器学习和深度学习中的概念以及相关原理，然后通过一个机器学习的例子和深度学习的例子，进行代码层面的讲解，最后，部署一下当前比较流行的大模型私有化服务，以及RAG技术实现大模型的商用场景。</p>
+<p>人工智能到底难不难，门槛高不高？<br>个人感觉，人工智能虽然理论较为复杂，但是借助开源社区和工具包，实践并不困难；</p>
+<h1 id="思考一个哲学问题"><a href="#思考一个哲学问题" class="headerlink" title="思考一个哲学问题"></a>思考一个哲学问题</h1><p>你相信世界的本质是数学， 数学可以描述一切吗？</p>
+<ul>
+<li>牛顿的万有引力公式，用数学来描述了引力；</li>
+<li>麦克斯韦用麦克斯韦方程组，统一了电和磁；</li>
+<li>爱因斯坦用相对论，统一了时间、空间、质量、能量；</li>
+<li>杨振宁用杨·米尔斯方程，统一了电磁力，强相互作用力，弱相互作用力；至此，大一统理论完成了3&#x2F;4；<br>以上的划时代的科学家分别用数学公式，揭示了宇宙运行的奥秘。爱因斯坦说：这个世界最不可被理解的地方就是它居然可以被理解，杨振宁说：造物者也许是存在的，至少宇宙不是偶然。根本原因就是，宇宙的规律居然可以用数学公式来描述。<br>如果说，这个世界是可以用数学来表示的，那么所有的图像、声音、语言、思想都应该可以用数学来表示，但问题是，我们无法获得这个公式。而人工智能的基本思想是，用维度足够高，参数足够多的非线性公式来拟合，通过足够多的样本来进行训练，不停的调整这个庞大而又复杂的公式，不求绝对精确，但是要无限逼近真实公式的一种算法。<br>因此，人工智能是建立在，假设这个世界是可以用数学来描述的基础上而进行发展的，我们用模型+参数来拟合这个世界。最近十几年，随着大数据和计算机算力的发展，使得AI的发展得到了飞速发展。</li>
+</ul>
+<h1 id="人工智能的发展史"><a href="#人工智能的发展史" class="headerlink" title="人工智能的发展史"></a>人工智能的发展史</h1><div align="center">
+<img src="/images/人工智能发展历程.PNG" alt="人工智能发展史" width="70%">
+</div>
+
+<p>要理解人工智能，就需要了解人工智能的发展史，期间经历过三起两落：</p>
+<ul>
+<li>1943年，模型M-P神经元模型的提出，简单的线性加权的方式来模拟这个过程，其中l为输入，W为权重，加权的和经过一个阈值函数后作为输出。</li>
+</ul>
+<div align="center">
+<img src="/images/神经网络权重.PNG" alt="" width="70%">
+</div>
+
+<ul>
+<li><p>1949年，Hebb假设，当细胞A的轴突到细胞B的距离近到足够激励它，且反复地或持续地刺激B，那么在这两个细胞或一个细胞中将会发生某种增长过程或代谢反应，增加A对细胞B的刺激效果；赫布（Hebb）规则与“条件反射”机理一致，为以后的神经网络学习算法奠定了基础，具有重大的历史意义。</p>
+</li>
+<li><p>1958年：Rosenblatt感知机(Perceptron)算法，Rosenblatt第一次将M-P模型用于对输入的多维数据进行二分类，使用梯度下降法从训练样本中自动学习更新权值；1962年，该方法被证明最终收敛，理论与实践效果引起第一次神经网络的浪潮。</p>
+</li>
+</ul>
+<div align="center">
+<img src="/images/感知机.PNG" alt="" width="70%">
+</div>
+
+<ul>
+<li><p>1969年，XOR问题的质疑，美国数学家及人工智能先驱Minsky和Papert，在其著作中证明了感知器本质上是一种线性模型，无法解决最简单的XOR(亦或)问题，“线性不可分的问题”；宣判了感知器的死刑，神经网络的研究也陷入了10余年的停滞（进入第一个寒冬)，人们对神经网络的研究也停滞了将近20年。</p>
+</li>
+<li><p>1982-1984年，辛顿与年轻学者谢诺夫斯基等合作提出了大规模并行网络学习机，并明确提出隐藏单元的概念，这种学习机后来被称为玻尔兹曼机（Boltzmann machine）。他们利用统计物理学的概念和方法，首次提出的多层网络的学习算法，称为玻尔兹曼机模型。</p>
+</li>
+</ul>
+<div align="center">
+<img src="/images/玻尔兹曼机.PNG" alt="" width="70%">
+</div>
+
+<ul>
+<li><p>1986年，Rumelhart，Hilton等人发明了适用于多层感知器(Multi-Layer Perceptron，MLP)和误差反向传播算法(Back Propagation，BP）算法，并采用Sigmoid函数进行非线性映射，有效解决了非线性分类和学习的问题。BP算法引起了神经网络的第二次热潮。</p>
+</li>
+<li><p>1989年，Robert Hecht-Nielsen证明了MLP的万能逼近定理，即对于任何闭区间内的一个连续函数f，都可以用含有一个隐含层的BP网络来逼近该定理的发现极大的鼓舞了神经网络的研究人员。</p>
+</li>
+</ul>
+<div align="center">
+<img src="/images/BP网络.PNG" alt="" width="70%">
+</div>
+
+<ul>
+<li>1989年，LeCun发明了卷积神经网络-LeNet，并将其用于数字识别，且取得了较好的成绩，不过当时并没有引起足够的注意。</li>
+</ul>
+<div align="center">
+<img src="/images/LeNet.PNG" alt="" width="70%">
+</div>
+
+<ul>
+<li><p>1991年，迎来第二次寒冬，BP算法被指出存在梯度消失问题，即在误差梯度后向传递的过程中，后层梯度以乘性方式叠加到前层，由于Sigmoid函数的饱和特性，后层梯度本来就小，误差梯度传到前层时几乎为0，因此无法对前层进行有效的学习，该发现对此时的NN发展雪上加霜，该问题直接阻碍了深度学习的进一步发展。</p>
+</li>
+<li><p>1997年，LSTM模型被发明，尽管该模型在序列建模上的特性非常突出，但由于正处于NN的下坡期，也没有引起足够的重视。</p>
+</li>
+</ul>
+<div align="center">
+<img src="/images/LSTM.PNG" alt="" width="70%">
+</div>
+
+
+<ul>
+<li>1986年-2006年，统计学习占据主流。<ul>
+<li>1986年，ID3，ID4，CART等改进的决策树方法相继出现，到目前仍然是非常常用的一种机器学习方法。该方法也是符号学习方法的代表；</li>
+<li>1995年，SVM支持向量机算法被统计学家V.Vapnik和C.Cortes发明了SVM提出。该方法的特点有两个：由非常完美的数学理论推导而来(统计学与凸优化等)，符合人的直观感受（最大间隔)。不过，最重要的还是该方法在线性分类的问题上取得了当时最好的成绩；</li>
+</ul>
+</li>
+</ul>
+<div align="center">
+<img src="/images/SVM.PNG" alt="" width="70%">
+</div>
+
+
+<ul>
+<li><p>1997年，AdaBoost被提出，该方法是PAC(Probably Approximately Correct)理论在机器学习实践上的代表，也催生了集成方法这一类。该方法通过一系列的弱分类器集成，达到强分类器的效果；</p>
+</li>
+<li><p>2000年，Kernel SVM被提出，核化的SVM通过一种巧妙的方式将原空间线性不可分的问题，通过Kernel映射成高维空间的线性可分问题，成功解决了非线性分类的问题，且分类效果非常好。至此也更加终结了ANN时代；</p>
+</li>
+<li><p>2001年，随机森林被提出，这是集成方法的另一代表，该方法的理论扎实，比AdaBoost更好的抑制过拟合问题，实际效果也非常不错；</p>
+</li>
+<li><p>2001年，一种新的统一框架-图模型被提出，该方法试图统一机器学习混乱的方法，如朴素贝叶斯，SVM，隐马尔可夫模型等，为各种学习方法提供一个统一的描述框架；</p>
+</li>
+<li><p>支持向量机算法诞生（SVM算法）等各种浅层机器学习模型被提出，SVM也是一种有监督的学习模型，应用于模式识别，分类以及回归分析等。支持向量机以统计学为基础，和神经网络有明显的差异，支持向量机等算法的提出再次阻碍了深度学习的发展。</p>
+</li>
+<li><p>2006年-2017年，神经网络的崛起阶段</p>
+<ul>
+<li>2006年，杰弗里·辛顿以及他的学生鲁斯兰·萨拉赫丁诺夫正式提出了深度学习的概念。他们在世界顶级学术期刊《Science》发表的一篇文章中详细的给出了“梯度消失”问题的解决方案——通过无监督的学习方法逐层训练算法，再使用有监督的反向传播算法进行调优。该深度学习方法的提出，立即在学术圈引起了巨大的反响，斯坦福大学、纽约大学、加拿大蒙特利尔大学等成为研究深度学习的重镇，至此开启了深度学习在学术界和工业界的浪潮。<ul>
+<li>2011年，ReLU激活函数被提出，该激活函数能够有效的抑制梯度消失问题。2011年以来，微软首次将DL应用在语音识别上，取得了重大突破。微软研究院和Google的语音识别研究人员先后采用深度神经网络DNN技术降低语音识别错误率至20％~30％，是语音识别领域十多年来最大的突破性进展。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div align="center">
+<img src="/images/ReLU.PNG" alt="" width="70%">
+</div>
+
+<ul>
+<li><p>2012年，在著名的ImageNet图像识别大赛中，通过构建的CNN网络AlexNet一举夺得冠军，且碾压第二名（SVM方法）的分类性能。</p>
+</li>
+<li><p>2014年，Facebook基于深度学习技术的DeepFace项目，在人脸识别方面的准确率已经能达到97%以上，跟人类识别的准确率几乎没有差别。这样的结果也再一次证明了深度学习算法在图像识别方面的一骑绝尘。</p>
+</li>
+<li><p>2017年，基于强化学习算法的AlphaGo升级版AlphaGo Zero横空出世。其采用“从零开始”、“无师自通”的学习模式，以100:0的比分轻而易举打败了之前的AlphaGo。</p>
+</li>
+<li><p>2022年11月，chatGPT横空出世，开启了大模型时代；</p>
+</li>
+</ul>
+<blockquote>
+<p>一个比较有意思的现象：<br>工程上，其实有很多伟大的发明被证实很有效，但是至今没有整明白其原理，比如：二甲双胍、阿司匹林这些药物的原理，航空上喷气式发动机的原理，以及包括我们的卷积神经网络，到目前为止都没人能证明为什么会有这么好的效果，chatGPT的创始人也对大模型取得的效果感到意外；</p>
+</blockquote>
+<h1 id="机器学习"><a href="#机器学习" class="headerlink" title="机器学习"></a>机器学习</h1><h2 id="机器学习的相关概念"><a href="#机器学习的相关概念" class="headerlink" title="机器学习的相关概念"></a>机器学习的相关概念</h2><ul>
+<li>定义：机器学习是这样的领域,它赋予计算机学习的能力,(这种学习能力)不是通过显著式编程获得的。</li>
+<li>显著式编程：需要我们帮助程序预先了解好执行环境，并让其根据原先既定的逻辑一步步执行下去。</li>
+<li>非显著编程：计算机通过数据、经验自动的学习归纳，完成人类交给的任务。在执行中，程序往往有一个“收益函数”与”激活函数”对一个当前发生事件进行权重分析并做出下一步行为执行的决策。</li>
+<li>当我们通过计算机识别菊花与玫瑰花：</li>
+</ul>
+<div align="center">
+<img src="/images/菊花.png" alt="" width="70%">
+</div>
+
+<p>让计算机自己去总结菊花和玫瑰的区别：花瓣很长、颜色是黄的很可能是菊花，花瓣是圆的颜色是红的很可能是玫瑰花，即计算机可以通过大量的图片，总结出菊花是黄色，玫瑰是红色。<br>这个规律形成过程中。我们事先并不约束计算机必须总结出什么规律，而是让计算机自己挑出最能区分菊花和玫瑰的一些规律。<br>由此，在识别图像时，当程序看到一个黄色的，计算机基于菊花的收益函数为正值，且观察到花瓣是长的，收益函数同样为正值，得到此刻的收益值达到激活函数的菊花权重要求，可以推导出得到该花瓣为菊花。<br>所以在非显著性编程中，我们规定了行为和收益函数后，让计算机自己去找最大化收益函数的行为。计算机采用随机化的行为，只要我们的程序编得足够好，计算机是可能找到一个最大化收益函数的行为模式，并通过“激活函数”作为某个行为的执行条件。<br>非显著式的编程可以让计算机通过数据、经验自动的学习来完成我们交给的任务。机器学习关注的就是这种非显著式的编程。</p>
+<blockquote>
+<p>机器学习是一种实现人工智能的方法，深度学习是一种实现机器学习的技术。</p>
+</blockquote>
+<h2 id="常用的机器学习算法"><a href="#常用的机器学习算法" class="headerlink" title="常用的机器学习算法"></a>常用的机器学习算法</h2><div align="center">
+<img src="/images/常用的机器学习算法.png" alt="" width="70%">
+</div>
+
+<p>机器学习分为四大块：</p>
+<ul>
+<li>分类问题（Classification），监督学习，给定了非连续（离散）的属性值，通过一定的逻辑将样本进行归类；</li>
+<li>回归问题（Regression），监督学习，产生连续连续的结果，通常是一条回归曲线，和分类问题相似；</li>
+<li>聚类问题（Clustering），无监督学习，没有给定属性值，通过一定的标准将样本划分为不同的集合，同一集合内样本像似，不同集合样本相异；</li>
+<li>降维问题（Dimensionality Reduction），用维数更低的子空间来表示原来高维的特征空间；</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>问题分类</th>
+<th>算法</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>分类问题</td>
+<td>K-近邻算法 (K-Nearest Neighbor, KNN)</td>
+<td>对于一个未知样本，找到与它最相似的k个已知样本，然后根据这k个样本的类别来判断未知样本的类别。KNN算法的优点是简单易懂，适用于多分类问题和非线性分类问题，但是它对数据集的大小和维度很敏感，需大量计算时间。</td>
+</tr>
+<tr>
+<td>分类问题</td>
+<td>决策树算法 (Decision Tree)</td>
+<td>通过一系列的二元分裂构建一棵树，每个分裂节点都是一个判断条件，每个叶子节点都是一个类别。决策树算法易于理解和解释，但如果树的深度过大，就会导致过拟合。此外，决策树算法对连续型变量的处理较为困难。</td>
+</tr>
+<tr>
+<td>分类问题</td>
+<td>朴素贝叶斯算法 (Naive Bayes)</td>
+<td>假设特征之间相互独立，即朴素贝叶斯将每类样本的特征看作独立变量，然后根据贝叶斯定理计算每个类别的概率。朴素贝叶斯算法的优点是计算速度快，适用于大规模数据集和高维数据集，但它对于特征之间相关性较强的数据效果不佳。</td>
+</tr>
+<tr>
+<td>分类问题</td>
+<td>支持向量机算法 (Support Vector Machine, SVM)</td>
+<td>SVM算法是一种基于最大间隔的分类算法，核心思想是将数据集映射到高维空间，然后在高维空间中找到一个最优的超平面，使得不同类别的数据点距离超平面最远。SVM算法的优点是适用于高维数据集和非线性数据集，有很好的分类能力，但对大规模数据集的训练时间较长，且对噪声和异常值敏感。</td>
+</tr>
+<tr>
+<td>分类问题</td>
+<td>逻辑回归算法 (Logistic Regression)</td>
+<td>逻辑回归算法是一种基于概率的分类算法，它将样本的特征与类别之间的关系建为一个逻辑回归模型，然后根据模型输出值判断样本的类别。逻辑回归算法的优点是计算速度快，适用于二分类问题和线性分类问题，但它对于非线性分类问题效果不佳。</td>
+</tr>
+<tr>
+<td>分类问题</td>
+<td>神经网络算法 (Neural Network)</td>
+<td>神经网络算法是一种基于生物神经系统的分类算法，模拟多层神经元的连接来模拟人脑的功能，然后根据神经元之间的权重判断样本的类别。神经网络算法的优点是对非线性数据集有很好的分类能力，但是对于大规模数据集的训练时间较长，需要大量的计算资源。</td>
+</tr>
+<tr>
+<td>分类问题</td>
+<td>随机森林算法 (Random Forest)</td>
+<td>随机森林算法是一种基于集成学习的分类算法，它通过多个决策树组合起来来提高分类的准确率。优点是对高维数据集有很好的分类能力，且对噪声和异常值有较强的鲁棒性，但对于连续型变量的处理较为困难。</td>
+</tr>
+<tr>
+<td>分类问题</td>
+<td>梯度提升算法(Gradient Boosting)</td>
+<td>梯度提升算法是一种基于集成学习的分类算法，它通过将多个弱分类器组合起来来提高分类的准确率。梯度提升算法的优点是对于高维数据集和非线性数据集具有很好的分类能力，且对于噪声和异常值的鲁棒性较强，但是它对于大规模数据集的训练时间较长。</td>
+</tr>
+<tr>
+<td>分类问题</td>
+<td>AdaBoost算法(Adaptive Boosting)</td>
+<td>AdaBoost算法是一种基于集成学习的分类算法，它通过将多个弱分类器组合起来来提高分类的准确率。AdaBoost算法的优点是对于高维数据集和非线性数据集具有很好的分类能力，且对于噪声和异常值的鲁棒性较强，但是它对于大规模数据集的训练时间较长。</td>
+</tr>
+<tr>
+<td>分类问题</td>
+<td>XGBoost算法(Extreme Gradient Boosting)</td>
+<td>XGBoost算法是一种基于梯度提升的分类算法，它通过对梯度提升算法进行优化来提高分类的准确率。XGBoost算法的优点是对于高维数据集和非线性数据集具有很好的分类能力，且对于大规模数据集的训练时间较短，但是它对于噪声和异常值的鲁棒性较弱。</td>
+</tr>
+<tr>
+<td>回归问题</td>
+<td>线性回归</td>
+<td>线性回归是一种线性模型，它假设输入变量 (X) 和单个输出变量 (y) 之间存在线性关系。</td>
+</tr>
+<tr>
+<td>回归问题</td>
+<td>多项式回归</td>
+<td>当我们想要为非线性可分数据创建模型时，多项式回归是最受欢迎的选择之一。它类似于线性回归，但使用变量 X 和 y 之间的关系来找到绘制适合数据点的曲线的最佳方法。</td>
+</tr>
+<tr>
+<td>回归问题</td>
+<td>支持向量机</td>
+<td>支持向量机在分类问题中是众所周知的。SVM 在回归中的使用称为支持向量回归(SVR)。</td>
+</tr>
+<tr>
+<td>回归问题</td>
+<td>决策树回归</td>
+<td>决策树是一种用于分类和回归的非参数监督学习方法。目标是创建一个模型，通过学习从数据特征推断出的简单决策规则来预测目标变量的值。 一棵树可以看作是一个分段常数近似。</td>
+</tr>
+<tr>
+<td>回归问题</td>
+<td>随机森林回归</td>
+<td>随机森林回归基本上与决策树回归非常相似。 它是一个元估计器，可以在数据集的各种子样本上拟合多个决策树，并使用平均来提高预测准确性和控制过拟合。</td>
+</tr>
+<tr>
+<td>回归问题</td>
+<td>XGBoost回归</td>
+<td>XGBoost 是梯度提升算法的一种高效且有效的实现。梯度提升是指一类可用于分类或回归问题的集成机器学习算法。</td>
+</tr>
+<tr>
+<td>聚类问题</td>
+<td>K-means</td>
+<td>这是最常见的聚类算法之一，用于将数据分成预定义数量的簇。</td>
+</tr>
+<tr>
+<td>聚类问题</td>
+<td>层次聚类</td>
+<td>通过构建数据点之间的层次结构来进行聚类，可以是自底向上的凝聚方法或自顶向下的分裂方法。</td>
+</tr>
+<tr>
+<td>降维问题</td>
+<td>PCA</td>
+<td>其本质思想就是将高维的线性相关的各个特征分量分解为低维线性无关的分量，可以通俗的理解为，原始数据在高维的特征空间中的表达可以近似的以低维空间来表征，并且保证这个低维空间能够表征高维空间中的绝大部分信息。</td>
+</tr>
+</tbody></table>
+<h1 id="深度学习中的相关概念"><a href="#深度学习中的相关概念" class="headerlink" title="深度学习中的相关概念"></a>深度学习中的相关概念</h1><h2 id="生物神经网络"><a href="#生物神经网络" class="headerlink" title="生物神经网络"></a>生物神经网络</h2><div align="center">
+<img src="/images/生物神经网络.png" alt="" width="70%">
+</div>
+
+<p>一个神经源是一个可以接收发射脉冲信号的细胞，在细胞体核心之外有树突和轴突；树突接收其他神经元的脉冲信号，而轴突将神经元的输出脉冲传递给其他神经源；一个神经源传递给不同神经元的输出是相同的，并且在突出部分发生信息的交换传递中无数个生物神经元的组合交互就形成了生物神经网络，使人具备了处理复杂信息的能力。</p>
+<h2 id="人工神经网络"><a href="#人工神经网络" class="headerlink" title="人工神经网络"></a>人工神经网络</h2><p>人工神经网络也试图模仿生物神经网络的工作原理对应的神经源形式。人工神经网络(Aritificial Neural Network，ANN)是理论化的人脑神经网络的数学模型，是基于模仿大脑神经网络结构和功能而建立的一种信息处理系统。它实际上是一个由大量简单元件相互连接而成的复杂网络，具有高度的非线性，能够进行复杂的逻辑操作和非线性关系实现的系统。<br>人工神经网络也被称为“神经网络”或“人工神经系统”。通常缩写人工神经网络并将它们称为“ANN”或简称为“NN”。<br>对于一个被视为神经网络的系统，它必须包含一个带标签的图结构，图中的每个节点都执行一些简单的计算。从图论中，我们知道图由一组节点（即顶点）和一组将节点对连接在一起的连接（即边）组成。</p>
+<h2 id="神经网络的基本结构"><a href="#神经网络的基本结构" class="headerlink" title="神经网络的基本结构"></a>神经网络的基本结构</h2><div align="center">
+<img src="/images/神经网络基本结构.png" alt="" width="70%">
+</div>
+
+<p>整体架构包括层次结构、神经元、全连接、非线性四个部分</p>
+<ul>
+<li><p>层次结构</p>
+<ul>
+<li>输入层：接收外部数据，并将其转换为适合神经网络处理的形式；</li>
+<li>隐藏层：神经网络的核心部分，负责执行主要的计算和信息处理任务，隐藏层通常由多个神经元组成，每个神经元与上一层的神经元和下一层的神经元连接。这些连接的权重在训练过程中会不断调整，以使得神经网络能够更好地学习和预测数据；</li>
+<li>输出层：输出层是神经网络的终点，负责将隐藏层的结果转换为实际的预测或分类结果。输出层通常由一个或多个神经元组成，每个神经元都与上一层的神经元连接。输出层的神经元的权重会在训练过程中不断调整，以使得神经网络能够准确地预测或分类数据。输出层的作用是将隐藏层的结果转换为一个具体的预测或分类结果。例如，在图像识别任务中，输出层可能会将图像识别为不同的类别（如猫、狗等）；在自然语言处理任务中，输出层可能会将文本预测为下一个词（如给定一个句子，预测下一个词）。</li>
+</ul>
+</li>
+<li><p>神经元，每个层次中都有许多圆圆的球似的东西，这个东西就是在神经网络中的神经元，就是数据的量或者是矩阵的大小，每一种层次中的神经元中的含量不太一样。在输入层中的每一个神经元里面是你输入原始数据（一般称为X）的不同特征，比如x为一张图片，这张图片的像素是32<em>32</em>3，其中的每一个像素都是它的特征吧，所以有3072个特征对应的输入层神经元个数就是3072个，这些特征以矩阵的形式进行输入的。我们举个例子比如我们的输入矩阵为‘1<em>3072’（第一维的数字表示一个batch（batch指的是每次训练输入多少个数据）中有多少个输入；第二维数字中的就是每一个输入有多少特征。）<br>在隐藏层中的每一层神经元表示对x进行一次更新的数据，而每层有几个神经元（比如图中hidden1层中有四个神经元）表示将你的输入数据的特征扩展到几个（比如图中就是四个），就比如你的输入三个特征分别为年龄，体重，身高，而图中hidden1层中第一个神经元中经过变换可以变成这样‘年龄0.1+体重0.4+身高0.5’，而第二个神经元可以表示成‘年龄0.2+体重0.5+身高0.3’，每一层中的神经元都可以有不同的表示形式。<br>在输出层中的的神经元个数主要取决于你想要让神经网络干什么，比如你想让它做一个10分类问题，输出层的矩阵就可以是’1</em>10’的矩阵（第一维表示的与输入层表示数字相同，后面10就是10种分类）。</p>
+</li>
+<li><p>全连接，我们看到的每一层和下一层中间都有灰色的线，这些线就被称为全连接（因为你看上一层中每个神经元都连接着下一层中的所有神经元），而这些线我们也可以用一个矩阵表示，这个矩阵我们通常称为‘权重矩阵’，用大写的W来表示（是后续我们需要更新的参数）。 权重矩阵W的维数主要靠的是上一层进来数据的输入数据维数和下一层需要输入的维数，可以简单理解为上有一层有几个神经元和下一层有几个神经元，例如图中input layer中有3个神经元，而hidden1 layer中有4个神经元，中的W的维度就为‘3*4’，以此类推。（主要是因为我们全连接层的形式是矩阵运算形式，需要满足矩阵乘法的运算法则）</p>
+</li>
+<li><p>非线性：在每层运算做完后，我们得数据不能直接输入到下一层计算中，需要添加一些非线性函数（大部分也可以叫做激活函数），常用的激活函数有relu，sigmoid，tanh等，就比如说在input layer 在hidden1 layer计算完后不能将数据直接传如hidden2 layer在这之间需要添加一个激活函数。</p>
+</li>
+</ul>
+<div align="center">
+<img src="/images/卷积神经网络.png" alt="" width="70%">
+</div>
+
+<h3 id="常用的激活函数"><a href="#常用的激活函数" class="headerlink" title="常用的激活函数"></a>常用的激活函数</h3><p>激活函数的主要作用是完成数据的非线性变换，解决线性模型的表达、分类能力不足的问题。激活函数的主要作用是改变之前数据的线性关系，如果网络中全部是线性变换，则多层网络可以通过矩阵变换，直接转换成一层神经网络。所以激活函数的存在，使得神经网络的“多层”有了实际的意义，使网络更加强大，增加网络的能力，使它可以学习复杂的事物，复杂的数据，以及表示输入输出之间非线性的复杂的任意函数映射。</p>
+<div align="center">
+<img src="/images/常用的激活函数1.png" alt="" width="70%">
+</div>
+
+<div align="center">
+<img src="/images/常用的激活函数2.png" alt="" width="70%">
+</div>
+
+
+<div style="display: flex; align-items: center;">
+  <img src="/images/激活函数-RELU.png" alt="激活函数-RELU" style="width: 48%; margin-right: 2%;">
+  <img src="/images/激活函数-RELU2.png" alt="激活函数-RELU2" style="width: 48%;">
+</div>
+
+<h3 id="常用的计算方法"><a href="#常用的计算方法" class="headerlink" title="常用的计算方法"></a>常用的计算方法</h3><ul>
+<li>卷积，池化等概念</li>
+</ul>
+<h3 id="AI的计算平台"><a href="#AI的计算平台" class="headerlink" title="AI的计算平台"></a>AI的计算平台</h3><ul>
+<li>TensorFlow: 由Google开发的开源机器学习框架，在国内也很受欢迎，拥有广泛的用户及社区支持。</li>
+<li>PyTorch: 由Facebook开发，国内使用较为广泛，特别是在学术界和科研领域中广受欢迎。</li>
+<li>Keras：是一个在Python中使用的高级神经网络库，它运行在TensorFlow之上。Keras的设计理念是“用户友好，模块化，易于扩展”，这使得Keras对于初学者非常友好。然而，对于一些复杂的模型，Keras可能没有TensorFlow和PyTorch那么强大。</li>
+<li>Scikit-learn: Scikit-learn是一个广泛用于统计建模和机器学习的Python库。它提供了大量的监督学习和无监督学习算法，以及数据预处理和模型选择工具。尽管Scikit-learn对于深度学习支持不多，但对于初步接触机器学习的初学者来说，Scikit-learn是一个极好的选择。</li>
+<li>PaddlePaddle: 百度自主研发的开源深度学习平台，也是国内较为流行的人工智能软件平台。</li>
+<li>MindSpore: 华为近年来推出的开源AI框架，支持多种硬件平台，国内也享有较高声誉。</li>
+<li>NCNN: 腾讯优图推出的轻量级的深度学习框架，适用于手机端、嵌入式设备等场景。</li>
+</ul>
+<h3 id="模型的评价指标"><a href="#模型的评价指标" class="headerlink" title="模型的评价指标"></a>模型的评价指标</h3><ul>
+<li>TP、TN、FP、FN概念</li>
+</ul>
+<h2 id="混淆矩阵"><a href="#混淆矩阵" class="headerlink" title="混淆矩阵"></a>混淆矩阵</h2><table>
+<thead>
+<tr>
+<th></th>
+<th>正类(Predict Label)</th>
+<th>负类(Predict Label)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>正类(Label)</td>
+<td>True Positives  <br><strong>(TP，正类判定为正类)</strong></td>
+<td>False Positives <br><strong>(FP，负类判定为正类，即”存伪”)</strong></td>
+</tr>
+<tr>
+<td>负类(Label)</td>
+<td>False Negatives <br><strong>(FN，正类判定为负类，即”去真”)</strong></td>
+<td>True Negatives <br><strong>(TN，负类判定为负类)</strong></td>
+</tr>
+</tbody></table>
+<ul>
+<li>准确率（Accuracy），顾名思义，就是所有的预测正确（正类负类）的占总的比重（所有预测正确的占总预测的比例）。</li>
+</ul>
+<p>$$<br>Accuracy &#x3D; \frac{TP+TN}{TP+TN+FP+FN}<br>$$</p>
+<ul>
+<li>精确率（Precision），查准率。即正确预测为正的占全部预测为正的比例（真正正确的占所有预测为正的比例）。</li>
+</ul>
+<p>$$<br>Precsion&#x3D;\frac{TP}{TP+FP}<br>$$</p>
+<ul>
+<li>召回率（Recall），查全率。即正确预测为正的占全部实际为正的比例（真正正确的占所有实际为正的比例）。</li>
+</ul>
+<p>$$<br>Recall&#x3D;\frac{TP}{TP+FN}<br>$$</p>
+<ul>
+<li>F1值（H-mean值）。F1值为算数平均数除以几何平均数，且越大越好，将Precision和Recall的上述公式带入会发现，当F1值小时，True Positive相对增加，而false相对减少，即Precision和Recall都相对增加，即F1对Precision和Recall都进行了加权。</li>
+</ul>
+<p>$$<br>F_1&#x3D;\frac{2PR}{P+R}&#x3D;&gt;\frac{2}{F_1}&#x3D;\frac{1}{Precision}+\frac{1}{Recall}<br>$$</p>
+<ul>
+<li>ROC曲线，接收者操作特征曲线（receiver operating characteristic curve），是反映敏感性和特异性连续变量的综合指标，ROC曲线上每个点反映着对同一信号刺激的感受性。下图是ROC曲线示例（绿色实线）。</li>
+</ul>
+<div align="center">
+<img src="/images/ROC曲线.png" alt="" width="70%">
+</div>
+
+<p>横坐标：1-Specificity，伪正类率(False positive rate，FPR，FPR&#x3D;FP&#x2F;(FP+TN))，预测为正但实际为负的样本占所有负例样本的比例；<br>纵坐标：Sensitivity，真正类率(True positive rate，TPR，TPR&#x3D;TP&#x2F;(TP+FN))，预测为正且实际为正的样本占所有正例样本的比例。<br>在一个二分类模型中，假设采用逻辑回归分类器，其给出针对每个实例为正类的概率，那么通过设定一个阈值如0.6，概率大于等于0.6的为正类，小于0.6的为负类。对应的就可以算出一组(FPR，TPR)，在平面中得到对应坐标点。随着阈值的逐渐减小，越来越多的实例被划分为正类，但是这些正类中同样也掺杂着真正的负实例，即TPR和FPR会同时增大。阈值最大时，对应坐标点为(0,0)，阈值最小时，对应坐标点(1,1)。<br>真正的理想情况，TPR应接近1，FPR接近0，即图中的（0,1）点。ROC曲线越靠拢（0,1）点，越偏离45度对角线越好。</p>
+<ul>
+<li>AUC值，AUC (Area Under Curve) 被定义为ROC曲线下的面积（青色覆盖面积），显然这个面积的数值不会大于1。又由于ROC曲线一般都处于y&#x3D;x这条直线的上方，所以AUC的取值范围一般在0.5和1之间。使用AUC值作为评价标准是因为很多时候ROC曲线并不能清晰的说明哪个分类器的效果更好，而作为一个数值，对应AUC更大的分类器效果更好。</li>
+</ul>
+<div align="center">
+<img src="/images/AUC曲线.png" alt="" width="70%">
+</div>
+
+<p>从AUC判断分类器（预测模型）优劣的标准：<br>1）AUC &#x3D; 1，是完美分类器，采用这个预测模型时，存在至少一个阈值能得出完美预测。绝大多数预测的场合，不存在完美分类器。<br>2）0.5 &lt; AUC &lt; 1，优于随机猜测。这个分类器（模型）妥善设定阈值的话，能有预测价值。<br>3）AUC &#x3D; 0.5，跟随机猜测一样（例：丢铜板），模型没有预测价值。<br>4）AUC &lt; 0.5，比随机猜测还差；但只要总是反预测而行，就优于随机猜测。<br>总的来说，AUC值越大的分类器，正确率越高。</p>
+<p>关于精确率和召回率，我们举一个例子:<br>一个新冠预测系统,输入核酸信息,可以判断是否得了新冠，然后我们设计了一个算法,最终得到的准确度是99.9%，粗看我们觉得这个系统还是很OK的，但是实际上 ，这个系统可能并不够好，原因在于如果新冠产生的概率只有0.1%, 我们只要预测所有人都是健康的,那么就可以得到99.9%的准确率，这样系统实际上什么都没做,但是准确度就有99.9%。</p>
+<div align="center">
+<img src="/images/召回率.png" alt="" width="70%">
+</div>
+
+<blockquote>
+<p>精准率具体的公式在上面,对于新冠病毒来说,我们更关注有多少人得了新冠, 所以精准率就是我们预测自己关注的事件有多准,也就是我们想知道我们预测得新冠有多准</p>
+</blockquote>
+<div align="center">
+<img src="/images/召回率2.png" alt="" width="70%">
+</div>
+
+<blockquote>
+<p>召回率同样的,对于新冠来说,实际得病10人,我们预测8人得病,所以recall&#x3D;80%。</p>
+</blockquote>
+<div align="center">
+<img src="/images/召回率3.png" alt="" width="70%">
+</div>
+
+
+<h3 id="代价函数、损失函数、目标函数"><a href="#代价函数、损失函数、目标函数" class="headerlink" title="代价函数、损失函数、目标函数"></a>代价函数、损失函数、目标函数</h3><ul>
+<li><p>损失函数：损失函数(Loss Function)衡量了模型$f$对样本$x$的预测结果$\hat{y}&#x3D;f(x)$与真实标签 $y&#x3D;y(x)$ 的距离。</p>
+<ul>
+<li>Square Loss: $ L_{square}(\hat{y},y)&#x3D;(\hat{y}-y)^2 $</li>
+<li>Absolute Loss: $ L_{abs}(\hat{y},y)&#x3D;|\hat{y}-y| $</li>
+</ul>
+</li>
+<li><p>代价函数：代价函数(Cost Function)和损失函数(Loss Function)通常是一个意思，但有些作者对两者做出了明显的区分：损失函数的计算目标是单个样本$x$，而代价函数的计算目标是一组样本。</p>
+</li>
+</ul>
+<p>假设$$L$$为损失函数，计算样本$$x$$上的损失。那么代价函数则可以表示为整个训练&#x2F;验证&#x2F;测试集$D&#x3D;{(x_i,y_i)}^n_{i&#x3D;1}$上所有样本的损失之和的平均值(Cost &#x3D; mean Loss):$Cost(f,D)&#x3D;\frac{1}{n}\sum_{i&#x3D;1}^nL(\hat{y_i},y_i)$</p>
+<p>Mean Squared Error: $MSE&#x3D;\frac{1}{n}\sum_{i&#x3D;1}^nL_{squared}(\hat{y}<em>i,y_i)&#x3D;\frac{1}{n}\sum</em>{i&#x3D;1}^n(\hat{y}_i-y_i)^2$</p>
+<p>Root-Mean-Square Error(RMSE): $RMSE&#x3D;\sqrt{\frac{1}{n}\sum_{i&#x3D;1}^n(\hat{y}_i-y_i)^2}$</p>
+<ul>
+<li>目标函数：在模型训练过程中，我们想要Loss(Cost)值尽可能低，但是在训练集上的low loss(cost)不是唯一追求的目标。我们更关心的是模型的泛化能力，也就是在验证&#x2F;测试集上的表现。为了避免模型对训练集合的过拟合，我们通常会增加一个正则化项(regularization item)来惩罚模型的复杂度，此时我们想要最小化的函数就变成了：<br>$E&#x3D;Cost(f,D)+Regularizer(f)$<br>此时的$$E$$就是目标函数（Objective Function），是我们最终想要的最小化&#x2F;最大化的目标，这时代价函数作为目标函数中的一项，不一定能达到最小值（因为有正则化项的约束）。当然，若不添加正则化项，则目标函数就等于代价函数。</li>
+</ul>
+<blockquote>
+<p>机器学习和深度学习过程中，如果模型过于复杂，训练集、测试集数据分布不一致的话，很容器出现过拟合的现象，通过添加正则化项可以较好的解决该类问题。</p>
+</blockquote>
+<ul>
+<li>过拟合产生的原因和解决方法</li>
+</ul>
+<h2 id="梯度下降和反向传播"><a href="#梯度下降和反向传播" class="headerlink" title="梯度下降和反向传播"></a>梯度下降和反向传播</h2><ul>
+<li>梯度下降和反向传播</li>
+</ul>
+<h2 id="一个例子讲明白机器学习"><a href="#一个例子讲明白机器学习" class="headerlink" title="一个例子讲明白机器学习"></a>一个例子讲明白机器学习</h2><ul>
+<li>贝叶斯模型技术分享</li>
+</ul>
+<h1 id="一个例子讲明白深度学习"><a href="#一个例子讲明白深度学习" class="headerlink" title="一个例子讲明白深度学习"></a>一个例子讲明白深度学习</h1><h2 id="用深度学习来实现手写数字识别"><a href="#用深度学习来实现手写数字识别" class="headerlink" title="用深度学习来实现手写数字识别"></a>用深度学习来实现手写数字识别</h2><p>MNIST手写数字数据集来源于是美国国家标准与技术研究所，是著名的公开数据集之一。数据集中的数字图片是由250个不同职业的人纯手写绘制，数据集获取的网址为：<a target="_blank" rel="noopener" href="http://yann.lecun.com/exdb/mnist/%EF%BC%88%E4%B8%8B%E8%BD%BD%E5%90%8E%E9%9C%80%E8%A7%A3%E5%8E%8B%EF%BC%89%E3%80%82">http://yann.lecun.com/exdb/mnist/（下载后需解压）。</a><br>MNIST手写数字数据集中包含了70000张图片，其中60000张为训练数据，10000为测试数据，70000张图片均是28*28。</p>
+<h1 id="大模型的构建和应用"><a href="#大模型的构建和应用" class="headerlink" title="大模型的构建和应用"></a>大模型的构建和应用</h1><ul>
+<li>ChatGLM，<a target="_blank" rel="noopener" href="https://github.com/THUDM/ChatGLM-6B">https://github.com/THUDM/ChatGLM-6B</a><br>个人尝试部署了ChatGLM的，由于我的GPU显卡(2080TI, 11G)的内存较小，将模型精度从16位降低到了8位，运行效果如下：</li>
+</ul>
+<div align="center">
+<img src="/images/chatGLM.png" alt="" width="70%">
+</div>
+
+
+<h1 id="大模型RAG技术"><a href="#大模型RAG技术" class="headerlink" title="大模型RAG技术"></a>大模型RAG技术</h1><h2 id="大模型的局限性"><a href="#大模型的局限性" class="headerlink" title="大模型的局限性"></a>大模型的局限性</h2><p>通用的基础大模型基本无法满足我们的实际业务需求，主要有以下几方面原因：</p>
+<ul>
+<li>知识的局限性：模型自身的知识完全源于它的训练数据，而现有的主流大模型（ChatGPT、文心一言、通义千问…）的训练集基本都是构建于网络公开的数据，对于一些实时性的、非公开的或离线的数据是无法获取到的，这部分知识也就无从具备。</li>
+<li>幻觉问题：所有的AI模型的底层原理都是基于数学概率，其模型输出实质上是一系列数值运算，大模型也不例外，所以它有时候会一本正经地胡说八道，尤其是在大模型自身不具备某一方面的知识或不擅长的场景。而这种幻觉问题的区分是比较困难的，因为它要求使用者自身具备相应领域的知识。</li>
+<li>数据安全性：对于企业来说，数据安全至关重要，没有企业愿意承担数据泄露的风险，将自身的私域数据上传第三方平台进行训练。这也导致完全依赖通用大模型自身能力的应用方案不得不在数据安全和效果方面进行取舍。</li>
+</ul>
+<h2 id="什么是RAG技术"><a href="#什么是RAG技术" class="headerlink" title="什么是RAG技术"></a>什么是RAG技术</h2><p>检索增强生成（Retrieval Augmented Generation），简称 RAG，简单来讲，RAG就是通过检索获取相关的知识并将其融入Prompt，让大模型能够参考相应的知识从而给出合理回答。因此，可以将RAG的核心理解为“检索+生成”，前者主要是利用向量数据库的高效存储和检索能力，召回目标知识；后者则是利用大模型和Prompt工程，将召回的知识合理利用，生成目标答案。</p>
+<div align="center">
+<img src="/images/RAG.png" alt="" width="70%">
+</div>
+
+<p>检索增强生成，要解决两个问题，如何检索和如何生成。<br>在检索阶段，算法搜索并检索与用户输入相关的信息片段，下图step1和step2从向量数据库中查询与query相关的信息片段 。生成阶段step3，大模型依据增强的提示和预训练的内部表示中提取信息，为用户量身定做生成答案，将答案发送给聊天机器人并附上出处链接。</p>
+<div align="center">
+<img src="/images/RAG2.png" alt="" width="70%">
+</div>
+
+<ul>
+<li><p>初始化流程步骤：</p>
+<ol>
+<li>文档加载</li>
+<li>文档切分</li>
+<li>向量化</li>
+<li>灌入向量数据库</li>
+</ol>
+</li>
+<li><p>检索流程步骤：</p>
+<ol>
+<li>获得用户问题</li>
+<li>用户问题向量化</li>
+<li>检索向量数据库</li>
+<li>将检索结果和用户问题填入 Prompt 模版</li>
+<li>用最终获得的 Prompt 调用 LLM</li>
+<li>由 LLM 生成回复</li>
+</ol>
+</li>
+</ul>
+<blockquote>
+<p>通过RAG技术，我们可以融合创蓝官网的数据，做出属于自己的客服机器人。</p>
+</blockquote>
+<h1 id="一些AI的学习资源"><a href="#一些AI的学习资源" class="headerlink" title="一些AI的学习资源"></a>一些AI的学习资源</h1><ul>
+<li>吴恩达的AI公开课</li>
+<li>李沐的AI公开课</li>
+</ul>
+<h1 id="最后的一个思考题"><a href="#最后的一个思考题" class="headerlink" title="最后的一个思考题"></a>最后的一个思考题</h1><div align="center">
+<img src="/images/三门问题.png" alt="" width="70%">
+</div>
+
+<p>三门问题（Monty Hall problem）亦称为蒙提霍尔问题、蒙特霍问题或蒙提霍尔悖论，大致出自美国的电视游戏节目Let’s Make a Deal。问题名字来自该节目的主持人蒙提·霍尔（Monty Hall）。</p>
+<ul>
+<li><p>参赛者会看见三扇关闭了的门，其中一扇的后面有一辆汽车，选中后面有车的那扇门可赢得该汽车，另外两扇门后面则各藏有一只山羊。</p>
+</li>
+<li><p>当参赛者选定了一扇门，但未去开启它的时候，节目主持人开启剩下两扇门的其中一扇，露出其中一只山羊。</p>
+</li>
+<li><p>主持人其后会问参赛者要不要换另一扇仍然关上的门。<br>如果是你，你会选择换吗？（提示：用贝叶斯定理去解）</p>
+</li>
+<li><p>三门问题的贝叶斯解法</p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/" rel="tag"># 人工智能</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/04/20/MCP%E5%8E%9F%E7%90%86%E8%AF%A6%E8%A7%A3/" rel="prev" title="MCP原理详解">
+                  <i class="fa fa-angle-left"></i> MCP原理详解
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Tony</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"xiaoweige1101/xiaoweige1101.github.io","issue_term":"pathname","label":"utterances","theme":"github-light","theme_dark":"github-dark"}</script>
+<script src="/js/third-party/comments/utterances.js" defer></script>
+
+</body>
+</html>
