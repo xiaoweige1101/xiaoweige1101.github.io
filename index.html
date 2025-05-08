@@ -221,7 +221,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-05-08 19:40:52" itemprop="dateModified" datetime="2025-05-08T19:40:52+08:00">2025-05-08</time>
+      <time title="修改时间：2025-05-08 19:44:25" itemprop="dateModified" datetime="2025-05-08T19:44:25+08:00">2025-05-08</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -573,19 +573,19 @@
 <ul>
 <li>准确率（Accuracy），顾名思义，就是所有的预测正确（正类负类）的占总的比重（所有预测正确的占总预测的比例）。</li>
 </ul>
-<p>$$<br>Accuracy &#x3D; \frac{TP+TN}{TP+TN+FP+FN}<br>$$</p>
+<p>$$Accuracy &#x3D; \frac{TP+TN}{TP+TN+FP+FN}$$</p>
 <ul>
 <li>精确率（Precision），查准率。即正确预测为正的占全部预测为正的比例（真正正确的占所有预测为正的比例）。</li>
 </ul>
-<p>$$<br>Precsion&#x3D;\frac{TP}{TP+FP}<br>$$</p>
+<p>$$Precsion&#x3D;\frac{TP}{TP+FP}$$</p>
 <ul>
 <li>召回率（Recall），查全率。即正确预测为正的占全部实际为正的比例（真正正确的占所有实际为正的比例）。</li>
 </ul>
-<p>$$<br>Recall&#x3D;\frac{TP}{TP+FN}<br>$$</p>
+<p>$$Recall&#x3D;\frac{TP}{TP+FN}$$</p>
 <ul>
 <li>F1值（H-mean值）。F1值为算数平均数除以几何平均数，且越大越好，将Precision和Recall的上述公式带入会发现，当F1值小时，True Positive相对增加，而false相对减少，即Precision和Recall都相对增加，即F1对Precision和Recall都进行了加权。</li>
 </ul>
-<p>$$<br>F_1&#x3D;\frac{2PR}{P+R}&#x3D;&gt;\frac{2}{F_1}&#x3D;\frac{1}{Precision}+\frac{1}{Recall}<br>$$</p>
+<p>$$F_1&#x3D;\frac{2PR}{P+R}&#x3D;&gt;\frac{2}{F_1}&#x3D;\frac{1}{Precision}+\frac{1}{Recall}$$</p>
 <ul>
 <li>ROC曲线，接收者操作特征曲线（receiver operating characteristic curve），是反映敏感性和特异性连续变量的综合指标，ROC曲线上每个点反映着对同一信号刺激的感受性。下图是ROC曲线示例（绿色实线）。</li>
 </ul>
@@ -604,21 +604,21 @@
 <p>从AUC判断分类器（预测模型）优劣的标准：<br>1）AUC &#x3D; 1，是完美分类器，采用这个预测模型时，存在至少一个阈值能得出完美预测。绝大多数预测的场合，不存在完美分类器。<br>2）0.5 &lt; AUC &lt; 1，优于随机猜测。这个分类器（模型）妥善设定阈值的话，能有预测价值。<br>3）AUC &#x3D; 0.5，跟随机猜测一样（例：丢铜板），模型没有预测价值。<br>4）AUC &lt; 0.5，比随机猜测还差；但只要总是反预测而行，就优于随机猜测。<br>总的来说，AUC值越大的分类器，正确率越高。</p>
 <p>关于精确率和召回率，我们举一个例子:<br>一个新冠预测系统,输入核酸信息,可以判断是否得了新冠，然后我们设计了一个算法,最终得到的准确度是99.9%，粗看我们觉得这个系统还是很OK的，但是实际上 ，这个系统可能并不够好，原因在于如果新冠产生的概率只有0.1%, 我们只要预测所有人都是健康的,那么就可以得到99.9%的准确率，这样系统实际上什么都没做,但是准确度就有99.9%。</p>
 <div align="center">
-<img src="/images/召回率.png" alt="" width="70%">
+<img src="/images/召回率.png" alt="" width="40%">
 </div>
 
 <blockquote>
 <p>精准率具体的公式在上面,对于新冠病毒来说,我们更关注有多少人得了新冠, 所以精准率就是我们预测自己关注的事件有多准,也就是我们想知道我们预测得新冠有多准</p>
 </blockquote>
 <div align="center">
-<img src="/images/召回率2.png" alt="" width="70%">
+<img src="/images/召回率2.png" alt="" width="40%">
 </div>
 
 <blockquote>
 <p>召回率同样的,对于新冠来说,实际得病10人,我们预测8人得病,所以recall&#x3D;80%。</p>
 </blockquote>
 <div align="center">
-<img src="/images/召回率3.png" alt="" width="70%">
+<img src="/images/召回率3.png" alt="" width="40%">
 </div>
 
 
